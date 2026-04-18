@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Previanest &mdash; Solicita&ccedil;&atilde;o de Exclus&atilde;o de Dados</title>
+    <link rel="icon" type="image/png" href="icon-180.png">
+    <style>
+        :root {
+            --primary: #1B6B93;
+            --primary-light: #EAF4F9;
+            --text: #2c3e50;
+            --text-light: #5a6c7d;
+            --bg: #ffffff;
+            --border: #e0e8ef;
+            --accent: #e74c3c;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--text);
+            background: #f5f7fa;
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+        a { color: var(--primary); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        .header {
+            text-align: center;
+            padding: 48px 24px 32px;
+            background: linear-gradient(135deg, var(--primary), #145374);
+            color: white;
+        }
+        .header-icon {
+            width: 72px; height: 72px; border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.25); margin-bottom: 16px;
+        }
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .header .subtitle {
+            font-size: 15px;
+            opacity: 0.85;
+        }
+        .meta {
+            text-align: center;
+            padding: 16px;
+            background: var(--primary-light);
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            color: var(--text-light);
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 24px 80px;
+        }
+
+        .intro-box {
+            background: var(--primary-light);
+            border-left: 4px solid var(--primary);
+            border-radius: 0 12px 12px 0;
+            padding: 20px 24px;
+            margin-bottom: 32px;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        h2 {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text);
+            margin: 36px 0 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--primary-light);
+        }
+        h2:first-of-type { margin-top: 0; }
+
+        h3 {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--text);
+            margin: 24px 0 12px;
+        }
+
+        p, li { font-size: 15px; margin-bottom: 12px; }
+        ul { padding-left: 24px; }
+        li { margin-bottom: 8px; }
+
+        .rights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin: 24px 0;
+        }
+        .right-card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        .right-card .icon { font-size: 28px; margin-bottom: 8px; }
+        .right-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+        .right-card p { font-size: 13px; color: var(--text-light); margin: 0; line-height: 1.5; }
+
+        .steps {
+            counter-reset: step;
+            margin: 24px 0;
+        }
+        .step {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            align-items: flex-start;
+        }
+        .step-number {
+            min-width: 36px; height: 36px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 15px;
+        }
+        .step-content h4 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+        .step-content p { font-size: 14px; color: var(--text-light); margin: 0; }
+
+        .email-box {
+            background: var(--bg);
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            margin: 32px 0;
+        }
+        .email-box .label {
+            font-size: 12px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            color: var(--text-light); margin-bottom: 8px;
+        }
+        .email-box a {
+            font-size: 20px; font-weight: 700; color: var(--primary);
+        }
+        .email-box .note {
+            font-size: 13px; color: var(--text-light); margin-top: 8px;
+        }
+
+        .template-box {
+            background: #f8f9fb;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin: 24px 0;
+            font-family: "SF Mono", "Menlo", "Monaco", "Consolas", monospace;
+            font-size: 13px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            color: var(--text);
+        }
+        .template-box .field {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            border-radius: 0 12px 12px 0;
+            padding: 16px 20px;
+            margin: 24px 0;
+            font-size: 14px;
+        }
+
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+        .info-table th, .info-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        .info-table th {
+            background: var(--primary-light);
+            font-weight: 600;
+            color: var(--text);
+            font-size: 13px;
+        }
+        .info-table td { color: var(--text-light); }
+
+        .footer {
+            text-align: center;
+            padding: 32px 24px;
+            border-top: 1px solid var(--border);
+            font-size: 13px;
+            color: var(--text-light);
+        }
+        .footer-logo {
+            display: flex; align-items: center; justify-content: center;
+            gap: 10px; margin-bottom: 12px;
+        }
+        .footer-logo img { width: 32px; height: 32px; border-radius: 8px; }
+        .footer-logo span { font-weight: 700; color: var(--text); font-size: 15px; }
+        .footer-links { margin: 12px 0; }
+        .footer-links a { color: var(--text-light); margin: 0 10px; font-size: 13px; }
+        .footer-links a:hover { color: var(--primary); }
+
+        @media (max-width: 600px) {
+            .header h1 { font-size: 22px; }
+            .container { padding: 24px 16px 60px; }
+            .email-box a { font-size: 17px; }
+            .template-box { font-size: 12px; padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <img src="icon-180.png" alt="Previanest" class="header-icon">
+        <h1>Exclus&atilde;o de Dados</h1>
+        <p class="subtitle">Solicita&ccedil;&atilde;o de remo&ccedil;&atilde;o de dados pessoais &mdash; LGPD</p>
+    </div>
+
+    <div class="meta">
+        Lei Geral de Prote&ccedil;&atilde;o de Dados (Lei 13.709/2018) &mdash; Artigos 17 a 22
+    </div>
+
+    <div class="container">
+
+        <div class="intro-box">
+            O Previanest respeita integralmente o seu direito &agrave; privacidade e &agrave; prote&ccedil;&atilde;o de dados pessoais. Em conformidade com a LGPD (Lei 13.709/2018), voc&ecirc; pode solicitar a exclus&atilde;o dos seus dados a qualquer momento. Esta p&aacute;gina explica como exercer esse direito.
+        </div>
+
+        <h2>Seus Direitos (LGPD, Art. 18)</h2>
+
+        <p>A LGPD garante ao titular dos dados os seguintes direitos, que podem ser exercidos mediante solicita&ccedil;&atilde;o ao controlador:</p>
+
+        <div class="rights-grid">
+            <div class="right-card">
+                <div class="icon">&#128269;</div>
+                <h4>Confirma&ccedil;&atilde;o e Acesso</h4>
+                <p>Confirmar a exist&ecirc;ncia de tratamento e acessar seus dados (Art. 18, I e II)</p>
+            </div>
+            <div class="right-card">
+                <div class="icon">&#9998;&#65039;</div>
+                <h4>Corre&ccedil;&atilde;o</h4>
+                <p>Solicitar a corre&ccedil;&atilde;o de dados incompletos, inexatos ou desatualizados (Art. 18, III)</p>
+            </div>
+            <div class="right-card">
+                <div class="icon">&#128465;&#65039;</div>
+                <h4>Elimina&ccedil;&atilde;o</h4>
+                <p>Solicitar a elimina&ccedil;&atilde;o de dados pessoais tratados com base no consentimento (Art. 18, VI)</p>
+            </div>
+            <div class="right-card">
+                <div class="icon">&#128274;</div>
+                <h4>Revoga&ccedil;&atilde;o</h4>
+                <p>Revogar o consentimento a qualquer momento, de forma gratuita e facilitada (Art. 18, IX)</p>
+            </div>
+        </div>
+
+        <h2>Dados Armazenados pelo Previanest</h2>
+
+        <h3>M&eacute;dico (usu&aacute;rio cadastrado)</h3>
+        <table class="info-table">
+            <thead>
+                <tr>
+                    <th>Dado</th>
+                    <th>Finalidade</th>
+                    <th>Exclus&atilde;o</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Nome e CRM</td>
+                    <td>Identifica&ccedil;&atilde;o profissional e valida&ccedil;&atilde;o</td>
+                    <td>Mediante solicita&ccedil;&atilde;o</td>
+                </tr>
+                <tr>
+                    <td>E-mail</td>
+                    <td>Autentica&ccedil;&atilde;o (Firebase Auth)</td>
+                    <td>Mediante solicita&ccedil;&atilde;o</td>
+                </tr>
+                <tr>
+                    <td>Foto do CRM (opcional)</td>
+                    <td>Verifica&ccedil;&atilde;o de autenticidade</td>
+                    <td>Autom&aacute;tica (180 dias) ou mediante solicita&ccedil;&atilde;o</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Paciente (dados preenchidos voluntariamente)</h3>
+        <table class="info-table">
+            <thead>
+                <tr>
+                    <th>Dado</th>
+                    <th>Finalidade</th>
+                    <th>Exclus&atilde;o</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Nome, data de nascimento, sexo</td>
+                    <td>Identifica&ccedil;&atilde;o para a ficha pr&eacute;-anest&eacute;sica</td>
+                    <td>Autom&aacute;tica (180 dias) ou mediante solicita&ccedil;&atilde;o</td>
+                </tr>
+                <tr>
+                    <td>Hist&oacute;rico cl&iacute;nico (comorbidades, alergias, medicamentos)</td>
+                    <td>Informa&ccedil;&otilde;es para avalia&ccedil;&atilde;o pr&eacute;-anest&eacute;sica</td>
+                    <td>Autom&aacute;tica (180 dias) ou mediante solicita&ccedil;&atilde;o</td>
+                </tr>
+                <tr>
+                    <td>C&oacute;digo de acesso tempor&aacute;rio</td>
+                    <td>V&iacute;nculo paciente-m&eacute;dico</td>
+                    <td>Autom&aacute;tica (180 dias) ou mediante solicita&ccedil;&atilde;o</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="warning-box">
+            <strong>Exclus&atilde;o autom&aacute;tica:</strong> Todos os dados de pacientes s&atilde;o automaticamente exclu&iacute;dos ap&oacute;s <strong>180 dias</strong> da coleta, por meio de TTL (Time-To-Live) no Firestore, regras de ciclo de vida no Cloud Storage e Cloud Functions programadas. Nenhuma a&ccedil;&atilde;o do usu&aacute;rio &eacute; necess&aacute;ria para essa exclus&atilde;o.
+        </div>
+
+        <h2>Como Solicitar a Exclus&atilde;o</h2>
+
+        <p>Voc&ecirc; pode solicitar a exclus&atilde;o dos seus dados de duas formas:</p>
+
+        <h3>Op&ccedil;&atilde;o 1 &mdash; Pelo pr&oacute;prio aplicativo</h3>
+        <p>Acesse <strong>Configura&ccedil;&otilde;es &gt; Minha Conta &gt; Excluir Conta e Dados</strong> dentro do Previanest. Todos os seus dados ser&atilde;o removidos permanentemente.</p>
+
+        <h3>Op&ccedil;&atilde;o 2 &mdash; Por e-mail</h3>
+        <p>Envie um e-mail para o endere&ccedil;o abaixo com as informa&ccedil;&otilde;es solicitadas:</p>
+
+        <div class="email-box">
+            <div class="label">E-mail para solicita&ccedil;&atilde;o</div>
+            <a href="mailto:privacidade@previanest.com.br?subject=Solicita%C3%A7%C3%A3o%20de%20Exclus%C3%A3o%20de%20Dados">privacidade@previanest.com.br</a>
+            <p class="note">Responderemos em at&eacute; 15 dias &uacute;teis, conforme a LGPD.</p>
+        </div>
+
+        <h3>Modelo de solicita&ccedil;&atilde;o</h3>
+        <p>Voc&ecirc; pode utilizar o modelo abaixo para facilitar sua solicita&ccedil;&atilde;o:</p>
+
+        <div class="template-box">Assunto: Solicita&ccedil;&atilde;o de Exclus&atilde;o de Dados &mdash; Previanest
+
+Prezada equipe Previanest,
+
+Solicito, com base na Lei 13.709/2018 (LGPD), Art. 18, a exclus&atilde;o completa dos meus dados pessoais armazenados pelo aplicativo Previanest.
+
+<span class="field">Nome completo:</span> [seu nome]
+<span class="field">E-mail cadastrado:</span> [seu e-mail]
+<span class="field">CRM (se m&eacute;dico):</span> [seu CRM/UF, se aplic&aacute;vel]
+
+Tipo de solicita&ccedil;&atilde;o:
+[ ] Exclus&atilde;o de todos os meus dados
+[ ] Exclus&atilde;o parcial (especificar): _______________
+[ ] Exporta&ccedil;&atilde;o dos meus dados antes da exclus&atilde;o
+
+Declaro que sou o titular dos dados acima informados.
+
+Atenciosamente,
+[seu nome]</div>
+
+        <h2>Processo de Exclus&atilde;o</h2>
+
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h4>Recebimento</h4>
+                    <p>Confirmamos o recebimento da sua solicita&ccedil;&atilde;o em at&eacute; 2 dias &uacute;teis.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h4>Verifica&ccedil;&atilde;o de identidade</h4>
+                    <p>Podemos solicitar informa&ccedil;&otilde;es adicionais para confirmar que voc&ecirc; &eacute; o titular dos dados, garantindo a seguran&ccedil;a da opera&ccedil;&atilde;o.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h4>Execu&ccedil;&atilde;o</h4>
+                    <p>Os dados s&atilde;o removidos permanentemente do Firebase Auth, Firestore e Cloud Storage em at&eacute; 15 dias &uacute;teis.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h4>Confirma&ccedil;&atilde;o</h4>
+                    <p>Enviamos um e-mail confirmando a exclus&atilde;o completa dos seus dados.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2>Informa&ccedil;&otilde;es Importantes</h2>
+
+        <ul>
+            <li><strong>A exclus&atilde;o &eacute; irrevers&iacute;vel.</strong> Uma vez removidos, os dados n&atilde;o podem ser recuperados. Se voc&ecirc; for m&eacute;dico, precisar&aacute; criar uma nova conta para voltar a utilizar o aplicativo.</li>
+            <li><strong>Dados de pacientes vinculados.</strong> Se voc&ecirc; for m&eacute;dico, a exclus&atilde;o da sua conta remover&aacute; tamb&eacute;m as fichas pr&eacute;-anest&eacute;sicas de pacientes associadas &agrave; sua conta. Certifique-se de que as informa&ccedil;&otilde;es necess&aacute;rias j&aacute; foram transcritas para o prontu&aacute;rio m&eacute;dico oficial.</li>
+            <li><strong>O Previanest n&atilde;o &eacute; prontu&aacute;rio m&eacute;dico.</strong> A responsabilidade pelo registro cl&iacute;nico oficial &eacute; do profissional de sa&uacute;de, conforme a legisla&ccedil;&atilde;o vigente.</li>
+            <li><strong>Dados anonimizados.</strong> Dados que foram previamente anonimizados para fins estat&iacute;sticos n&atilde;o est&atilde;o sujeitos &agrave; exclus&atilde;o, conforme Art. 12 da LGPD, pois n&atilde;o permitem a identifica&ccedil;&atilde;o do titular.</li>
+            <li><strong>Prazo legal.</strong> O prazo m&aacute;ximo para atendimento &eacute; de 15 dias &uacute;teis, conforme Art. 19, &sect;2&ordm; da LGPD.</li>
+        </ul>
+
+        <h2>Controlador dos Dados</h2>
+
+        <table class="info-table">
+            <tbody>
+                <tr>
+                    <td><strong>Controlador</strong></td>
+                    <td>Luiz Eduardo Costa Servi&ccedil;os M&eacute;dicos LTDA</td>
+                </tr>
+                <tr>
+                    <td><strong>CNPJ</strong></td>
+                    <td>53.911.561/0001-09</td>
+                </tr>
+                <tr>
+                    <td><strong>Respons&aacute;vel</strong></td>
+                    <td>Luiz Eduardo Costa &mdash; CRM/PR 40.367</td>
+                </tr>
+                <tr>
+                    <td><strong>Endere&ccedil;o</strong></td>
+                    <td>Rua Francisco Rocha, 198, Batel &mdash; CEP 80420-130 &mdash; Curitiba/PR</td>
+                </tr>
+                <tr>
+                    <td><strong>E-mail do Encarregado</strong></td>
+                    <td><a href="mailto:contato@previanest.com.br">contato@previanest.com.br</a></td>
+                </tr>
+                <tr>
+                    <td><strong>E-mail de Privacidade</strong></td>
+                    <td><a href="mailto:privacidade@previanest.com.br">privacidade@previanest.com.br</a></td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <div class="footer">
+        <div class="footer-logo">
+            <img src="icon-180.png" alt="Previanest">
+            <span>Previanest</span>
+        </div>
+        <div class="footer-links">
+            <a href="index.html">In&iacute;cio</a>
+            <a href="politica-de-privacidade.html">Privacidade</a>
+            <a href="termos-de-uso.html">Termos</a>
+            <a href="mailto:contato@previanest.com.br">Contato</a>
+        </div>
+        <p style="margin-top:12px;">
+            &copy; 2026 Previanest. Todos os direitos reservados.<br>
+            Luiz Eduardo Costa Servi&ccedil;os M&eacute;dicos LTDA &mdash; CNPJ 53.911.561/0001-09
+        </p>
+    </div>
+
+</body>
+</html>

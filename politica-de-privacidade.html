@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Previanest — Pol&iacute;tica de Privacidade</title>
+    <style>
+        :root {
+            --primary: #1B6B93;
+            --primary-light: #EAF4F9;
+            --text: #2c3e50;
+            --text-light: #5a6c7d;
+            --bg: #ffffff;
+            --border: #e0e8ef;
+            --accent: #e74c3c;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--text);
+            background: #f5f7fa;
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 24px 80px;
+        }
+        .header {
+            text-align: center;
+            padding: 48px 24px 32px;
+            background: linear-gradient(135deg, var(--primary), #145374);
+            color: white;
+        }
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .header .subtitle {
+            font-size: 15px;
+            opacity: 0.85;
+        }
+        .meta {
+            text-align: center;
+            padding: 16px;
+            background: var(--primary-light);
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            color: var(--text-light);
+        }
+        .content {
+            background: var(--bg);
+            padding: 40px 32px;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+        h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 36px 0 14px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--primary-light);
+        }
+        h2:first-of-type { margin-top: 0; }
+        h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
+            margin: 24px 0 10px;
+        }
+        p { margin-bottom: 14px; }
+        ul, ol {
+            margin: 10px 0 14px 24px;
+        }
+        li { margin-bottom: 6px; }
+        .highlight {
+            background: var(--primary-light);
+            border-left: 4px solid var(--primary);
+            padding: 14px 18px;
+            border-radius: 0 8px 8px 0;
+            margin: 16px 0;
+            font-size: 14px;
+        }
+        .warning {
+            background: #fef5f5;
+            border-left: 4px solid var(--accent);
+            padding: 14px 18px;
+            border-radius: 0 8px 8px 0;
+            margin: 16px 0;
+            font-size: 14px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 14px;
+        }
+        th, td {
+            padding: 10px 14px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        th {
+            background: var(--primary-light);
+            font-weight: 600;
+            color: var(--primary);
+        }
+        .contact-box {
+            background: var(--primary-light);
+            border-radius: 12px;
+            padding: 24px;
+            margin: 24px 0;
+        }
+        .contact-box p { margin-bottom: 6px; }
+        a { color: var(--primary); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .footer {
+            text-align: center;
+            padding: 32px 24px;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+        .toc {
+            background: var(--primary-light);
+            border-radius: 10px;
+            padding: 20px 24px;
+            margin-bottom: 32px;
+        }
+        .toc h3 { margin-top: 0; color: var(--primary); }
+        .toc ol { margin-left: 20px; }
+        .toc li { margin-bottom: 4px; font-size: 14px; }
+        .toc a { color: var(--text); }
+        .toc a:hover { color: var(--primary); }
+        @media (max-width: 600px) {
+            .content { padding: 24px 18px; }
+            .container { padding: 24px 12px 60px; }
+            h2 { font-size: 18px; }
+            table { font-size: 13px; }
+            th, td { padding: 8px 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="icon-180.png" alt="Previanest" style="width:72px;height:72px;border-radius:16px;margin-bottom:12px;box-shadow:0 4px 16px rgba(0,0,0,0.2);">
+        <h1>Pol&iacute;tica de Privacidade</h1>
+        <div class="subtitle">Previanest &mdash; Avalia&ccedil;&atilde;o Pr&eacute;-Anest&eacute;sica</div>
+    </div>
+    <div class="meta">
+        &Uacute;ltima atualiza&ccedil;&atilde;o: 18 de abril de 2026 &bull; Vers&atilde;o 1.0
+    </div>
+
+    <div class="container">
+        <div class="content">
+
+            <div class="toc">
+                <h3>Sum&aacute;rio</h3>
+                <ol>
+                    <li><a href="#s1">Identifica&ccedil;&atilde;o do Controlador</a></li>
+                    <li><a href="#s2">Sobre o Previanest</a></li>
+                    <li><a href="#s3">Dados Coletados</a></li>
+                    <li><a href="#s4">Finalidade do Tratamento</a></li>
+                    <li><a href="#s5">Base Legal (LGPD)</a></li>
+                    <li><a href="#s6">Compartilhamento de Dados</a></li>
+                    <li><a href="#s7">Armazenamento e Seguran&ccedil;a</a></li>
+                    <li><a href="#s8">Reten&ccedil;&atilde;o e Exclus&atilde;o de Dados</a></li>
+                    <li><a href="#s9">Direitos do Titular</a></li>
+                    <li><a href="#s10">Obriga&ccedil;&otilde;es do Profissional de Sa&uacute;de</a></li>
+                    <li><a href="#s11">Menores de Idade</a></li>
+                    <li><a href="#s12">Limita&ccedil;&otilde;es e Disclaimers</a></li>
+                    <li><a href="#s13">Altera&ccedil;&otilde;es nesta Pol&iacute;tica</a></li>
+                    <li><a href="#s14">Contato e Encarregado de Dados</a></li>
+                    <li><a href="#s15">Conformidade Internacional</a></li>
+                    <li><a href="#s16">Legisla&ccedil;&atilde;o Aplic&aacute;vel e Foro</a></li>
+                </ol>
+            </div>
+
+            <!-- 1 -->
+            <h2 id="s1">1. Identifica&ccedil;&atilde;o do Controlador</h2>
+            <p>O Previanest &eacute; um aplicativo desenvolvido e mantido por <strong>Luiz Eduardo Costa Servi&ccedil;os M&eacute;dicos LTDA</strong>, sob responsabilidade do <strong>Luiz Eduardo Costa</strong>, m&eacute;dico anestesiologista, CRM/PR 40.367, controlador dos dados pessoais coletados por meio deste aplicativo.</p>
+            <div class="contact-box">
+                <p><strong>Controlador:</strong> Luiz Eduardo Costa Servi&ccedil;os M&eacute;dicos LTDA</p>
+                <p><strong>CNPJ:</strong> 53.911.561/0001-09</p>
+                <p><strong>Respons&aacute;vel:</strong> Luiz Eduardo Costa &mdash; CRM/PR 40.367</p>
+                <p><strong>Endere&ccedil;o:</strong> Rua Francisco Rocha, 198, Batel &mdash; CEP 80420-130 &mdash; Curitiba/PR</p>
+                <p><strong>E-mail do Encarregado (DPO):</strong> <a href="mailto:contato@previanest.com.br">contato@previanest.com.br</a></p>
+                <p><strong>E-mail geral:</strong> <a href="mailto:geral@previanest.com.br">geral@previanest.com.br</a></p>
+                <p><strong>Site:</strong> <a href="https://previanest.com.br">previanest.com.br</a></p>
+            </div>
+
+            <!-- 2 -->
+            <h2 id="s2">2. Sobre o Previanest</h2>
+            <p>O Previanest &eacute; uma ferramenta de refer&ecirc;ncia cl&iacute;nico-educacional destinada a profissionais de sa&uacute;de, com foco na avalia&ccedil;&atilde;o pr&eacute;-anest&eacute;sica. O aplicativo permite que o paciente preencha, de forma volunt&aacute;ria, uma ficha informativa com seus dados de sa&uacute;de, visando agilizar e qualificar a consulta presencial obrigat&oacute;ria com o m&eacute;dico anestesiologista.</p>
+
+            <div class="highlight">
+                <strong>O que o Previanest N&Atilde;O &eacute; e N&Atilde;O faz:</strong>
+                <ul>
+                    <li>N&atilde;o constitui prontu&aacute;rio m&eacute;dico nem substitui a documenta&ccedil;&atilde;o m&eacute;dica oficial;</li>
+                    <li>N&atilde;o registra conduta ou ato m&eacute;dico, nem comunica&ccedil;&atilde;o m&eacute;dico-paciente;</li>
+                    <li>N&atilde;o produz laudos, diagn&oacute;sticos ou prescri&ccedil;&otilde;es;</li>
+                    <li>N&atilde;o faz sugest&otilde;es diagn&oacute;sticas ou terap&ecirc;uticas &mdash; apenas emite alertas de seguran&ccedil;a;</li>
+                    <li>N&atilde;o substitui a consulta m&eacute;dica presencial e obrigat&oacute;ria;</li>
+                    <li>N&atilde;o emite Termo de Consentimento Livre e Esclarecido (TCLE);</li>
+                    <li>N&atilde;o processa ou altera os dados fornecidos pelo paciente para fins diagn&oacute;sticos;</li>
+                    <li>N&atilde;o se enquadra como dispositivo m&eacute;dico nos termos da RDC 185/2001 ou RDC 657/2022 da ANVISA.</li>
+                </ul>
+            </div>
+            <p>A ficha gerada pelo Previanest &eacute; um documento auxiliar de triagem: registra a situa&ccedil;&atilde;o de sa&uacute;de relatada pelo pr&oacute;prio paciente e serve como pr&eacute;via da consulta presencial. A responsabilidade pela elabora&ccedil;&atilde;o do prontu&aacute;rio m&eacute;dico, registro de condutas e cumprimento das normas do Conselho Federal de Medicina (CFM) permanece integralmente com o profissional de sa&uacute;de e a institui&ccedil;&atilde;o.</p>
+
+            <p>As se&ccedil;&otilde;es de calculadoras de dosagem, escores cl&iacute;nicos e informa&ccedil;&otilde;es educativas s&atilde;o acess&iacute;veis exclusivamente a m&eacute;dicos cadastrados e aprovados mediante comprova&ccedil;&atilde;o documental. O conte&uacute;do &eacute; baseado em bulas aprovadas pela ANVISA, protocolos da Sociedade Brasileira de Anestesiologia (SBA), diretrizes da American Society of Anesthesiologists (ASA), literatura m&eacute;dica de alto n&iacute;vel de evid&ecirc;ncia e outras fontes reconhecidas internacionalmente. Nenhuma informa&ccedil;&atilde;o apresentada substitui o julgamento cl&iacute;nico do profissional.</p>
+
+            <p>O paciente tem acesso apenas a textos educativos voltados a leigos e &agrave; ficha pr&eacute;-anest&eacute;sica, n&atilde;o podendo acessar conte&uacute;dos destinados a m&eacute;dicos.</p>
+
+            <!-- 3 -->
+            <h2 id="s3">3. Dados Coletados</h2>
+
+            <h3>3.1 Dados do Profissional de Sa&uacute;de (M&eacute;dico)</h3>
+            <p>Ao se cadastrar no Previanest, o profissional fornece:</p>
+            <table>
+                <thead><tr><th>Dado</th><th>Finalidade</th></tr></thead>
+                <tbody>
+                    <tr><td>Nome completo</td><td>Identifica&ccedil;&atilde;o profissional</td></tr>
+                    <tr><td>CRM (UF e n&uacute;mero)</td><td>Valida&ccedil;&atilde;o da habilita&ccedil;&atilde;o m&eacute;dica</td></tr>
+                    <tr><td>E-mail</td><td>Autentica&ccedil;&atilde;o e comunica&ccedil;&atilde;o</td></tr>
+                    <tr><td>Telefone (opcional)</td><td>Contato para valida&ccedil;&atilde;o cadastral</td></tr>
+                    <tr><td>Documento do CRM (foto ou PDF)</td><td>Comprova&ccedil;&atilde;o documental da inscri&ccedil;&atilde;o</td></tr>
+                    <tr><td>Data de cadastro</td><td>Controle administrativo</td></tr>
+                    <tr><td>Consentimento para contato</td><td>Registro do consentimento informado</td></tr>
+                </tbody>
+            </table>
+            <p>A autentica&ccedil;&atilde;o pode ser feita por e-mail/senha, conta Google ou conta Apple. Quando o m&eacute;dico utiliza autentica&ccedil;&atilde;o por Google ou Apple, o nome e e-mail associados &agrave; conta s&atilde;o importados automaticamente.</p>
+
+            <h3>3.2 Dados do Paciente (Ficha Pr&eacute;-Anest&eacute;sica)</h3>
+            <p>O preenchimento da ficha &eacute; <strong>volunt&aacute;rio</strong> e realizado pelo pr&oacute;prio paciente (ou seu respons&aacute;vel legal), visando sua pr&oacute;pria seguran&ccedil;a. Os dados coletados incluem:</p>
+
+            <table>
+                <thead><tr><th>Categoria</th><th>Dados</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>Identifica&ccedil;&atilde;o</strong></td><td>Nome completo, data de nascimento, sexo biol&oacute;gico, peso, altura, contato de emerg&ecirc;ncia (nome e telefone &mdash; opcionais)</td></tr>
+                    <tr><td><strong>Hist&oacute;rico cir&uacute;rgico</strong></td><td>Cirurgias anteriores, tipos de anestesia j&aacute; recebidas, complica&ccedil;&otilde;es pr&eacute;vias, hist&oacute;rico familiar de complica&ccedil;&otilde;es anest&eacute;sicas</td></tr>
+                    <tr><td><strong>Medica&ccedil;&otilde;es</strong></td><td>Medicamentos em uso (nome, dosagem, frequ&ecirc;ncia), suplementos, alergias a medicamentos</td></tr>
+                    <tr><td><strong>Condi&ccedil;&otilde;es de sa&uacute;de</strong></td><td>Condi&ccedil;&otilde;es cardiovasculares, neurol&oacute;gicas, respirat&oacute;rias, end&oacute;crinas, hepatorrenais, hematol&oacute;gicas, oncol&oacute;gicas e psiqui&aacute;tricas</td></tr>
+                    <tr><td><strong>H&aacute;bitos de vida</strong></td><td>Tabagismo, consumo de &aacute;lcool, uso de subst&acirc;ncias, atividade f&iacute;sica, dist&uacute;rbios do sono</td></tr>
+                    <tr><td><strong>Sa&uacute;de da mulher</strong></td><td>Possibilidade de gravidez, amamenta&ccedil;&atilde;o, uso de anticoncepcional, menopausa (coletado apenas quando aplic&aacute;vel)</td></tr>
+                    <tr><td><strong>Preparo pr&eacute;-operat&oacute;rio</strong></td><td>Data da cirurgia, pr&oacute;tese dent&aacute;ria, piercings/implantes, alergias (l&aacute;tex, alimentos), compreens&atilde;o do jejum</td></tr>
+                    <tr><td><strong>Documentos complementares</strong></td><td>Exames ou documentos anexados pelo paciente (fotos ou PDFs)</td></tr>
+                    <tr><td><strong>Observa&ccedil;&otilde;es</strong></td><td>Campo livre para informa&ccedil;&otilde;es adicionais dirigidas &agrave; equipe m&eacute;dica</td></tr>
+                </tbody>
+            </table>
+
+            <div class="warning">
+                <strong>Dados sens&iacute;veis:</strong> A ficha pr&eacute;-anest&eacute;sica coleta dados referentes &agrave; sa&uacute;de, que s&atilde;o considerados <em>dados pessoais sens&iacute;veis</em> nos termos do art.&nbsp;5&ordm;, II, da LGPD. O tratamento desses dados &eacute; realizado com base no consentimento espec&iacute;fico do titular (art.&nbsp;11, I) e na tutela da sa&uacute;de do paciente (art.&nbsp;11, II, &ldquo;f&rdquo;).
+            </div>
+
+            <h3>3.3 Dados Derivados (Calculados Automaticamente)</h3>
+            <p>A partir dos dados informados, o aplicativo calcula automaticamente, sem interven&ccedil;&atilde;o humana: idade, &iacute;ndice de massa corporal (IMC), classifica&ccedil;&atilde;o do IMC e faixa et&aacute;ria cl&iacute;nica. Esses c&aacute;lculos s&atilde;o meramente informativos e n&atilde;o constituem diagn&oacute;stico.</p>
+
+            <h3>3.4 Dados N&Atilde;O Coletados</h3>
+            <p>O Previanest <strong>n&atilde;o coleta</strong>: dados de localiza&ccedil;&atilde;o (GPS), identificadores de dispositivo, dados biom&eacute;tricos, cookies de rastreamento, dados de navega&ccedil;&atilde;o, informa&ccedil;&otilde;es financeiras ou dados para fins publicit&aacute;rios. O Google Analytics est&aacute; desativado no aplicativo.</p>
+
+            <!-- 4 -->
+            <h2 id="s4">4. Finalidade do Tratamento dos Dados</h2>
+            <p>Os dados pessoais coletados pelo Previanest s&atilde;o utilizados exclusivamente para:</p>
+            <ul>
+                <li><strong>Triagem pr&eacute;-anest&eacute;sica:</strong> permitir que o m&eacute;dico anestesiologista tenha acesso pr&eacute;vio &agrave;s informa&ccedil;&otilde;es de sa&uacute;de do paciente antes da consulta presencial obrigat&oacute;ria;</li>
+                <li><strong>Seguran&ccedil;a do paciente:</strong> gerar alertas autom&aacute;ticos sobre condi&ccedil;&otilde;es que exigem aten&ccedil;&atilde;o especial (alergias, medica&ccedil;&otilde;es de risco, condi&ccedil;&otilde;es cr&iacute;ticas);</li>
+                <li><strong>Gera&ccedil;&atilde;o de ficha em PDF:</strong> produzir um documento consolidado com as respostas do paciente, para uso exclusivo do m&eacute;dico respons&aacute;vel;</li>
+                <li><strong>Cadastro e valida&ccedil;&atilde;o profissional:</strong> verificar que o usu&aacute;rio m&eacute;dico possui inscri&ccedil;&atilde;o v&aacute;lida no CRM;</li>
+                <li><strong>Comunica&ccedil;&atilde;o:</strong> enviar e-mails de verifica&ccedil;&atilde;o de conta, notifica&ccedil;&otilde;es administrativas e, quando consentido, contato para valida&ccedil;&atilde;o de dados.</li>
+            </ul>
+            <p>Os dados <strong>n&atilde;o s&atilde;o utilizados</strong> para marketing, publicidade, perfilamento comportamental, venda a terceiros, pesquisa cient&iacute;fica ou qualquer finalidade diversa das listadas acima.</p>
+
+            <!-- 5 -->
+            <h2 id="s5">5. Base Legal para o Tratamento (LGPD)</h2>
+            <p>O tratamento de dados pessoais pelo Previanest fundamenta-se nas seguintes bases legais da Lei Geral de Prote&ccedil;&atilde;o de Dados (Lei n&ordm; 13.709/2018):</p>
+            <table>
+                <thead><tr><th>Base Legal</th><th>Aplica&ccedil;&atilde;o</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>Consentimento</strong> (art.&nbsp;7&ordm;, I e art.&nbsp;11, I)</td><td>Coleta de dados de sa&uacute;de do paciente na ficha pr&eacute;-anest&eacute;sica (dados sens&iacute;veis) e consentimento para contato do m&eacute;dico</td></tr>
+                    <tr><td><strong>Tutela da sa&uacute;de</strong> (art.&nbsp;11, II, &ldquo;f&rdquo;)</td><td>Tratamento de dados de sa&uacute;de para garantir a seguran&ccedil;a do paciente em procedimento anest&eacute;sico</td></tr>
+                    <tr><td><strong>Execu&ccedil;&atilde;o de contrato</strong> (art.&nbsp;7&ordm;, V)</td><td>Cadastro e autentica&ccedil;&atilde;o do profissional m&eacute;dico para acesso ao servi&ccedil;o</td></tr>
+                    <tr><td><strong>Leg&iacute;timo interesse</strong> (art.&nbsp;7&ordm;, IX)</td><td>Manuten&ccedil;&atilde;o da seguran&ccedil;a do sistema e preven&ccedil;&atilde;o de fraudes no cadastro profissional</td></tr>
+                </tbody>
+            </table>
+
+            <!-- 6 -->
+            <h2 id="s6">6. Compartilhamento de Dados</h2>
+            <p>Os dados pessoais coletados pelo Previanest <strong>n&atilde;o s&atilde;o compartilhados com terceiros</strong> para fins comerciais, publicit&aacute;rios ou de pesquisa.</p>
+            <p>O acesso aos dados &eacute; restrito a:</p>
+            <ul>
+                <li><strong>M&eacute;dico respons&aacute;vel:</strong> acessa exclusivamente as fichas vinculadas ao seu CRM ou c&oacute;digo institucional;</li>
+                <li><strong>Administrador do sistema:</strong> acessa os dados <strong>exclusivamente</strong> para fins de: (a)&nbsp;exclus&atilde;o de dados ap&oacute;s o per&iacute;odo de reten&ccedil;&atilde;o de 180 dias; (b)&nbsp;atendimento a solicita&ccedil;&otilde;es de exclus&atilde;o do paciente; (c)&nbsp;valida&ccedil;&atilde;o cadastral de profissionais.</li>
+            </ul>
+            <p><strong>Servi&ccedil;os de infraestrutura:</strong> O Previanest utiliza servi&ccedil;os do Google Firebase (Authentication, Firestore, Cloud Storage e Cloud Functions) para armazenamento e processamento dos dados. O Firebase opera como <em>operador de dados</em> (processador) e est&aacute; sujeito &agrave; <a href="https://firebase.google.com/support/privacy" target="_blank" rel="noopener">Pol&iacute;tica de Privacidade do Google</a> e ao <a href="https://cloud.google.com/terms/data-processing-addendum" target="_blank" rel="noopener">Adendo de Processamento de Dados do Google Cloud</a>. Os dados s&atilde;o armazenados na regi&atilde;o <em>southamerica-east1</em> (S&atilde;o Paulo, Brasil).</p>
+            <p>N&atilde;o h&aacute; transfer&ecirc;ncia internacional de dados para finalidades de tratamento. Eventuais opera&ccedil;&otilde;es de infraestrutura realizadas pelo Google Cloud seguem as salvaguardas previstas no Cap&iacute;tulo V da LGPD.</p>
+
+            <!-- 7 -->
+            <h2 id="s7">7. Armazenamento e Seguran&ccedil;a</h2>
+            <p>O Previanest adota as seguintes medidas t&eacute;cnicas e organizacionais para proteger os dados pessoais:</p>
+            <ul>
+                <li><strong>Criptografia em tr&acirc;nsito:</strong> todas as comunica&ccedil;&otilde;es entre o aplicativo e os servidores utilizam criptografia TLS/SSL;</li>
+                <li><strong>Criptografia em repouso:</strong> os dados armazenados no Google Cloud Firestore e Cloud Storage s&atilde;o criptografados em repouso por padr&atilde;o;</li>
+                <li><strong>Autentica&ccedil;&atilde;o segura:</strong> senhas s&atilde;o gerenciadas pelo Firebase Authentication e nunca armazenadas em texto claro. Op&ccedil;&otilde;es de login seguro via Google e Apple Sign-In;</li>
+                <li><strong>Controle de acesso:</strong> cada m&eacute;dico acessa apenas as fichas vinculadas ao seu CRM. N&atilde;o h&aacute; acesso cruzado entre profissionais;</li>
+                <li><strong>Valida&ccedil;&atilde;o profissional:</strong> acesso &agrave; &aacute;rea m&eacute;dica condicionado a cadastro com CRM v&aacute;lido e verifica&ccedil;&atilde;o de e-mail;</li>
+                <li><strong>Rascunhos locais:</strong> dados tempor&aacute;rios de rascunho armazenados no dispositivo do usu&aacute;rio (UserDefaults) n&atilde;o incluem documentos anexados e s&atilde;o eliminados ap&oacute;s o envio da ficha;</li>
+                <li><strong>Servidor na Am&eacute;rica do Sul:</strong> os dados s&atilde;o hospedados na regi&atilde;o <em>southamerica-east1</em> (S&atilde;o Paulo), garantindo jurisdi&ccedil;&atilde;o brasileira.</li>
+            </ul>
+
+            <!-- 8 -->
+            <h2 id="s8">8. Reten&ccedil;&atilde;o e Exclus&atilde;o de Dados</h2>
+
+            <h3>8.1 Dados do Paciente (Fichas Pr&eacute;-Anest&eacute;sicas)</h3>
+            <p>As fichas pr&eacute;-anest&eacute;sicas e todos os documentos associados s&atilde;o <strong>automaticamente exclu&iacute;dos ap&oacute;s 180 dias</strong> (seis meses) da data de cria&ccedil;&atilde;o. Esse processo &eacute; realizado por tr&ecirc;s mecanismos independentes e redundantes:</p>
+            <ol>
+                <li>Pol&iacute;tica de expira&ccedil;&atilde;o autom&aacute;tica do banco de dados (TTL);</li>
+                <li>Regra de ciclo de vida do armazenamento em nuvem;</li>
+                <li>Fun&ccedil;&atilde;o autom&aacute;tica di&aacute;ria de limpeza (executada diariamente &agrave;s 03h, hor&aacute;rio de Bras&iacute;lia).</li>
+            </ol>
+            <p>A exclus&atilde;o abrange: dados da ficha no banco de dados, o PDF gerado e todos os documentos complementares anexados pelo paciente.</p>
+
+            <h3>8.2 Exclus&atilde;o Antecipada pelo Paciente</h3>
+            <p>A qualquer momento, o paciente pode solicitar a exclus&atilde;o imediata de sua ficha e de todos os seus dados por meio dos seguintes canais:</p>
+            <ul>
+                <li><strong>Formul&aacute;rio autom&aacute;tico no site:</strong> acess&iacute;vel em <a href="https://previanest.com.br">previanest.com.br</a>, preenchendo nome completo e data de nascimento;</li>
+                <li><strong>E-mail:</strong> <a href="mailto:privacidade@previanest.com.br">privacidade@previanest.com.br</a></li>
+            </ul>
+            <p>A exclus&atilde;o &eacute; processada em at&eacute; <strong>5 (cinco) dias &uacute;teis</strong> ap&oacute;s a solicita&ccedil;&atilde;o, conforme exige a LGPD.</p>
+
+            <h3>8.3 Exclus&atilde;o pelo M&eacute;dico</h3>
+            <p>O m&eacute;dico respons&aacute;vel pode excluir fichas individualmente pelo pr&oacute;prio aplicativo a qualquer momento.</p>
+
+            <h3>8.4 Dados do M&eacute;dico</h3>
+            <p>O cadastro do profissional &eacute; mantido enquanto a conta estiver ativa. O m&eacute;dico pode solicitar a exclus&atilde;o completa de sua conta e dados pelo e-mail <a href="mailto:privacidade@previanest.com.br">privacidade@previanest.com.br</a>.</p>
+
+            <!-- 9 -->
+            <h2 id="s9">9. Direitos do Titular dos Dados</h2>
+            <p>Em conformidade com os arts.&nbsp;17 a 22 da LGPD, o titular dos dados (paciente ou m&eacute;dico) possui os seguintes direitos:</p>
+            <ul>
+                <li><strong>Confirma&ccedil;&atilde;o e acesso:</strong> confirmar a exist&ecirc;ncia de tratamento e acessar seus dados;</li>
+                <li><strong>Corre&ccedil;&atilde;o:</strong> solicitar a corre&ccedil;&atilde;o de dados incompletos, inexatos ou desatualizados;</li>
+                <li><strong>Anonimiza&ccedil;&atilde;o, bloqueio ou elimina&ccedil;&atilde;o:</strong> solicitar quando os dados forem desnecess&aacute;rios, excessivos ou tratados em desconformidade;</li>
+                <li><strong>Portabilidade:</strong> solicitar a transfer&ecirc;ncia de seus dados a outro fornecedor, quando aplic&aacute;vel;</li>
+                <li><strong>Elimina&ccedil;&atilde;o:</strong> solicitar a exclus&atilde;o dos dados tratados com base no consentimento;</li>
+                <li><strong>Informa&ccedil;&atilde;o:</strong> ser informado sobre as entidades com as quais os dados s&atilde;o compartilhados;</li>
+                <li><strong>Revoga&ccedil;&atilde;o do consentimento:</strong> revogar o consentimento a qualquer momento, sem preju&iacute;zo da licitude do tratamento anterior;</li>
+                <li><strong>Reclama&ccedil;&atilde;o &agrave; ANPD:</strong> apresentar reclama&ccedil;&atilde;o &agrave; Autoridade Nacional de Prote&ccedil;&atilde;o de Dados.</li>
+            </ul>
+            <p>Para exercer qualquer desses direitos, entre em contato pelo e-mail <a href="mailto:privacidade@previanest.com.br">privacidade@previanest.com.br</a> ou utilize o formul&aacute;rio dispon&iacute;vel no site <a href="https://previanest.com.br">previanest.com.br</a>.</p>
+            <p>Responderemos em at&eacute; <strong>15 (quinze) dias</strong>, conforme art.&nbsp;18, &sect;&nbsp;5&ordm;, da LGPD.</p>
+
+            <!-- 10 -->
+            <h2 id="s10">10. Obriga&ccedil;&otilde;es do Profissional de Sa&uacute;de</h2>
+            <p>Ao utilizar o Previanest, o profissional de sa&uacute;de se compromete a:</p>
+            <ul>
+                <li>Utilizar os dados do paciente <strong>exclusivamente</strong> para a finalidade de avalia&ccedil;&atilde;o pr&eacute;-anest&eacute;sica e cuidado ao paciente;</li>
+                <li>N&atilde;o compartilhar dados sens&iacute;veis do paciente com terceiros n&atilde;o autorizados;</li>
+                <li>Cumprir a LGPD e as normas &eacute;ticas do CFM no que tange ao sigilo profissional;</li>
+                <li>Utilizar as informa&ccedil;&otilde;es da ficha apenas como <strong>pr&eacute;via da consulta presencial obrigat&oacute;ria</strong>, e n&atilde;o como substituto;</li>
+                <li>Manter o prontu&aacute;rio m&eacute;dico pr&oacute;prio, sob sua responsabilidade e da institui&ccedil;&atilde;o, conforme normas do CFM;</li>
+                <li>N&atilde;o justificar condutas m&eacute;dicas com base exclusiva nas informa&ccedil;&otilde;es do aplicativo.</li>
+            </ul>
+            <p>O consentimento do m&eacute;dico com esses termos &eacute; registrado no momento do cadastro e armazenado de forma apropriada. <strong>Condutas que violem esse acordo podem ser legalmente punidas nos termos da LGPD e do C&oacute;digo de &Eacute;tica M&eacute;dica.</strong></p>
+
+            <!-- 11 -->
+            <h2 id="s11">11. Menores de Idade</h2>
+            <p>A ficha pr&eacute;-anest&eacute;sica pode ser preenchida em nome de menores de idade. Neste caso:</p>
+            <ul>
+                <li>O preenchimento deve ser realizado pelo respons&aacute;vel legal (pai, m&atilde;e ou tutor(a) legal);</li>
+                <li>O aplicativo solicita a identifica&ccedil;&atilde;o do informante e sua rela&ccedil;&atilde;o com o paciente;</li>
+                <li>O consentimento &eacute; fornecido pelo respons&aacute;vel legal, conforme art.&nbsp;14 da LGPD.</li>
+            </ul>
+
+            <!-- 12 -->
+            <h2 id="s12">12. Limita&ccedil;&otilde;es e Disclaimers</h2>
+
+            <h3>12.1 Calculadoras e Escores</h3>
+            <p>As calculadoras de dosagem e os escores cl&iacute;nicos dispon&iacute;veis no Previanest s&atilde;o ferramentas de <strong>refer&ecirc;ncia exclusivamente informativa e educacional</strong>. S&atilde;o baseados em:</p>
+            <ul>
+                <li>Bulas aprovadas pela ANVISA e FDA;</li>
+                <li>Protocolos da Sociedade Brasileira de Anestesiologia (SBA);</li>
+                <li>Diretrizes da American Society of Anesthesiologists (ASA);</li>
+                <li>Literatura m&eacute;dica de alto n&iacute;vel de evid&ecirc;ncia (Miller&rsquo;s Anesthesia, 9&ordf; ed., entre outras).</li>
+            </ul>
+            <p>Todas as doses envolvem drogas aprovadas por ag&ecirc;ncias reguladoras e <strong>jamais incluem indica&ccedil;&otilde;es off-label ou em fase de teste cl&iacute;nico</strong>. Nenhum c&aacute;lculo est&aacute; conectado aos dados espec&iacute;ficos de pacientes. Os valores s&atilde;o orientativos e n&atilde;o substituem o julgamento cl&iacute;nico do profissional.</p>
+
+            <h3>12.2 Refer&ecirc;ncias Bibliogr&aacute;ficas e Direitos Autorais</h3>
+            <p>As refer&ecirc;ncias bibliogr&aacute;ficas citadas no aplicativo referem-se unicamente a conte&uacute;dos pontuais presentes nas obras, para fins de estudo e aprimoramento cl&iacute;nico, em conformidade com o art.&nbsp;46 da Lei 9.610/98 (Lei de Direitos Autorais). Nenhum trecho de obra protegida &eacute; reproduzido de forma literal. Os escores e escalas apresentados s&atilde;o adapta&ccedil;&otilde;es das vers&otilde;es originais, em l&iacute;ngua portuguesa do Brasil, e n&atilde;o reproduzem imagens ou tabelas originais.</p>
+
+            <h3>12.3 Limita&ccedil;&atilde;o de Responsabilidade</h3>
+            <p>O Previanest &eacute; fornecido &ldquo;como est&aacute;&rdquo; (<em>as is</em>), sem garantias de qualquer natureza. O desenvolvedor n&atilde;o se responsabiliza por decis&otilde;es cl&iacute;nicas tomadas com base nas informa&ccedil;&otilde;es do aplicativo. A responsabilidade pela conduta m&eacute;dica &eacute; integralmente do profissional e da institui&ccedil;&atilde;o.</p>
+
+            <!-- 13 -->
+            <h2 id="s13">13. Altera&ccedil;&otilde;es nesta Pol&iacute;tica</h2>
+            <p>Esta Pol&iacute;tica de Privacidade pode ser atualizada periodicamente para refletir mudan&ccedil;as no aplicativo, na legisla&ccedil;&atilde;o ou nas pr&aacute;ticas de tratamento de dados. Altera&ccedil;&otilde;es significativas ser&atilde;o comunicadas por meio do pr&oacute;prio aplicativo ou pelo e-mail cadastrado.</p>
+            <p>Recomendamos a consulta peri&oacute;dica desta p&aacute;gina. A data da &uacute;ltima atualiza&ccedil;&atilde;o est&aacute; indicada no topo deste documento.</p>
+
+            <!-- 14 -->
+            <h2 id="s14">14. Contato e Encarregado de Dados</h2>
+            <div class="contact-box">
+                <p><strong>Encarregado de Dados (DPO):</strong> Luiz Eduardo Costa &mdash; CRM/PR 40.367</p>
+                <p><strong>Empresa:</strong> Luiz Eduardo Costa Servi&ccedil;os M&eacute;dicos LTDA &mdash; CNPJ 53.911.561/0001-09</p>
+                <p><strong>Endere&ccedil;o:</strong> Rua Francisco Rocha, 198, Batel &mdash; CEP 80420-130 &mdash; Curitiba/PR</p>
+                <p><strong>Encarregado / DPO:</strong> <a href="mailto:contato@previanest.com.br">contato@previanest.com.br</a></p>
+                <p><strong>Privacidade e dados:</strong> <a href="mailto:privacidade@previanest.com.br">privacidade@previanest.com.br</a></p>
+                <p><strong>Suporte t&eacute;cnico:</strong> <a href="mailto:suporte@previanest.com.br">suporte@previanest.com.br</a></p>
+                <p><strong>Feedback:</strong> <a href="mailto:feedback@previanest.com.br">feedback@previanest.com.br</a></p>
+                <p><strong>Geral:</strong> <a href="mailto:geral@previanest.com.br">geral@previanest.com.br</a></p>
+                <p><strong>Site:</strong> <a href="https://previanest.com.br">previanest.com.br</a></p>
+            </div>
+            <p>Para exercer seus direitos como titular de dados, solicitar informa&ccedil;&otilde;es ou esclarecer d&uacute;vidas sobre esta pol&iacute;tica, entre em contato preferencialmente pelo e-mail <a href="mailto:privacidade@previanest.com.br">privacidade@previanest.com.br</a>.</p>
+
+            <!-- 15 -->
+            <h2 id="s15">15. Conformidade Internacional</h2>
+            <p>Embora o Previanest seja destinado ao territ&oacute;rio brasileiro, reconhecemos a import&acirc;ncia da conformidade com normas internacionais de prote&ccedil;&atilde;o de dados e propriedade intelectual:</p>
+
+            <h3>15.1 HIPAA (<em>Health Insurance Portability and Accountability Act</em> &mdash; EUA)</h3>
+            <p>O Previanest <strong>n&atilde;o &eacute; uma <em>covered entity</em></strong> (entidade coberta) nem um <em>business associate</em> nos termos do HIPAA, pois n&atilde;o opera como prestador de servi&ccedil;os de sa&uacute;de, plano de sa&uacute;de ou <em>clearinghouse</em> nos Estados Unidos e n&atilde;o processa <em>Protected Health Information</em> (PHI) de pacientes norte-americanos. Ainda assim, o Previanest adota pr&aacute;ticas alinhadas aos princ&iacute;pios do HIPAA, incluindo criptografia em tr&acirc;nsito e em repouso, controle de acesso baseado em credenciais e pol&iacute;tica de reten&ccedil;&atilde;o e exclus&atilde;o de dados.</p>
+
+            <h3>15.2 FTC Act &mdash; Se&ccedil;&atilde;o 5 (EUA)</h3>
+            <p>O Previanest compromete-se a n&atilde;o adotar pr&aacute;ticas enganosas ou desleais (<em>unfair or deceptive practices</em>) em rela&ccedil;&atilde;o ao tratamento de dados de sa&uacute;de. Todas as pr&aacute;ticas de coleta e uso de dados est&atilde;o descritas de forma transparente nesta Pol&iacute;tica. N&atilde;o h&aacute; compartilhamento de dados de sa&uacute;de com terceiros para fins publicit&aacute;rios, anal&iacute;ticos ou comerciais.</p>
+
+            <h3>15.3 CCPA/CPRA (<em>California Consumer Privacy Act</em>)</h3>
+            <p>O Previanest n&atilde;o &eacute; direcionado a residentes da Calif&oacute;rnia e n&atilde;o atinge os crit&eacute;rios de aplica&ccedil;&atilde;o do CCPA (receita bruta superior a US$&nbsp;25 milh&otilde;es, coleta de dados de mais de 100.000 consumidores californianos, ou obten&ccedil;&atilde;o de mais de 50% da receita com venda de dados pessoais). Ainda assim, os direitos do titular previstos na LGPD (Se&ccedil;&atilde;o 9 desta Pol&iacute;tica) s&atilde;o compat&iacute;veis com os direitos do CCPA, incluindo acesso, exclus&atilde;o e n&atilde;o discrimina&ccedil;&atilde;o. O Previanest <strong>n&atilde;o vende nem compartilha dados pessoais</strong> conforme definido pelo CCPA.</p>
+
+            <h3>15.4 COPPA (<em>Children&rsquo;s Online Privacy Protection Act</em> &mdash; EUA)</h3>
+            <p>O Previanest n&atilde;o &eacute; direcionado a crian&ccedil;as menores de 13 anos. Quando a ficha pr&eacute;-anest&eacute;sica &eacute; preenchida para pacientes pedi&aacute;tricos, o preenchimento &eacute; realizado pelo respons&aacute;vel legal, que fornece o consentimento em nome do menor (conforme tamb&eacute;m exige o art.&nbsp;14 da LGPD).</p>
+
+            <h3>15.5 <em>Fair Use</em> e Direitos Autorais Internacionais</h3>
+            <p>O conte&uacute;do cl&iacute;nico-educacional do Previanest &mdash; incluindo escores, escalas e refer&ecirc;ncias bibliogr&aacute;ficas &mdash; &eacute; utilizado em conformidade com:</p>
+            <ul>
+                <li><strong>Brasil:</strong> Art.&nbsp;46 da Lei 9.610/98, que permite a cita&ccedil;&atilde;o de passagens de obra para fins de estudo, cr&iacute;tica ou pol&ecirc;mica, com indica&ccedil;&atilde;o do autor e da origem;</li>
+                <li><strong>EUA:</strong> Doutrina do <em>fair use</em> (&sect;&nbsp;107 do <em>U.S. Copyright Act</em>), considerando: (1)&nbsp;o prop&oacute;sito educacional e n&atilde;o comercial do uso; (2)&nbsp;a natureza factual e cient&iacute;fica das obras; (3)&nbsp;a reprodu&ccedil;&atilde;o parcial e n&atilde;o literal; (4)&nbsp;a aus&ecirc;ncia de impacto no mercado da obra original;</li>
+                <li><strong>Conven&ccedil;&atilde;o de Berna:</strong> O Brasil &eacute; signat&aacute;rio da Conven&ccedil;&atilde;o de Berna para a Prote&ccedil;&atilde;o das Obras Liter&aacute;rias e Art&iacute;sticas, e o Previanest respeita os direitos morais e patrimoniais dos autores de todas as obras referenciadas.</li>
+            </ul>
+            <p>Os escores e escalas cl&iacute;nicas apresentados no Previanest s&atilde;o adapta&ccedil;&otilde;es em l&iacute;ngua portuguesa, n&atilde;o reproduzem imagens, tabelas ou trechos literais das publica&ccedil;&otilde;es originais, e t&ecirc;m finalidade exclusivamente educacional e de refer&ecirc;ncia cl&iacute;nica r&aacute;pida, visando a seguran&ccedil;a do paciente e a educa&ccedil;&atilde;o do profissional de sa&uacute;de.</p>
+
+            <!-- 16 -->
+            <h2 id="s16">16. Legisla&ccedil;&atilde;o Aplic&aacute;vel e Foro</h2>
+            <p>Esta Pol&iacute;tica de Privacidade &eacute; regida pela legisla&ccedil;&atilde;o da Rep&uacute;blica Federativa do Brasil, em especial:</p>
+            <ul>
+                <li>Lei n&ordm; 13.709/2018 &mdash; Lei Geral de Prote&ccedil;&atilde;o de Dados (LGPD);</li>
+                <li>Lei n&ordm; 12.965/2014 &mdash; Marco Civil da Internet;</li>
+                <li>Lei n&ordm; 8.078/1990 &mdash; C&oacute;digo de Defesa do Consumidor;</li>
+                <li>Resolu&ccedil;&otilde;es do Conselho Federal de Medicina (CFM) aplic&aacute;veis.</li>
+            </ul>
+            <p>Para dirimir quaisquer controv&eacute;rsias decorrentes desta Pol&iacute;tica, fica eleito o foro da comarca do domic&iacute;lio do titular dos dados, conforme art.&nbsp;101, I, do C&oacute;digo de Defesa do Consumidor.</p>
+
+        </div>
+    </div>
+
+    <div class="footer">
+        &copy; 2026 Previanest. Todos os direitos reservados.<br>
+        Desenvolvido com dedica&ccedil;&atilde;o &agrave; seguran&ccedil;a do paciente.
+    </div>
+</body>
+</html>
