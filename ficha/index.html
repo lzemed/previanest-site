@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Previanest — Ficha Pré-Anestésica</title>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    :root{--navy:#172C57;--teal:#0A7F99;--blue:#2167B3;--red:#B81C24;--amber:#C76608;--green:#1A854F;--gray:#6B7585;--border:#CBD9EB;--row:#F2F6FF;--bg:#F0F4FA;}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:#1a1a2e;min-height:100vh}
+
+    /* ── Welcome Screen ── */
+    #s-welcome{min-height:100vh;background:linear-gradient(160deg,#0d1f3c 0%,#172C57 45%,#1a4a6e 100%);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:0 0 60px}
+    .welcome-hero{width:100%;max-width:500px;margin:0 auto;padding:48px 24px 0;text-align:center}
+    .welcome-logo-wrap{display:inline-flex;flex-direction:column;align-items:center;gap:14px;margin-bottom:28px}
+    .welcome-logo-svg{width:90px;height:90px;filter:drop-shadow(0 8px 24px rgba(10,127,153,.5))}
+    .welcome-brand{font-size:28px;font-weight:900;color:#fff;letter-spacing:1px;text-transform:uppercase}
+    .welcome-brand span{color:#0A7F99}
+    .welcome-tagline{font-size:13px;color:rgba(255,255,255,.5);letter-spacing:2px;text-transform:uppercase;margin-top:2px}
+    .welcome-title{font-size:22px;font-weight:700;color:#fff;line-height:1.4;margin-bottom:10px}
+    .welcome-subtitle{font-size:15px;color:rgba(255,255,255,.7);line-height:1.6;margin-bottom:32px}
+    .welcome-card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:20px;margin-bottom:20px;text-align:left;backdrop-filter:blur(10px)}
+    .welcome-features{display:flex;flex-direction:column;gap:12px}
+    .welcome-feat{display:flex;align-items:center;gap:14px}
+    .welcome-feat-icon{width:38px;height:38px;border-radius:10px;background:rgba(10,127,153,.25);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+    .welcome-feat-text{font-size:14px;color:rgba(255,255,255,.85);line-height:1.4}
+    .welcome-feat-text strong{color:#fff;display:block;margin-bottom:1px}
+    .lgpd-banner{background:rgba(10,127,153,.15);border:1px solid rgba(10,127,153,.35);border-radius:12px;padding:14px 16px;margin-bottom:20px;display:flex;gap:12px;align-items:flex-start}
+    .lgpd-banner-icon{font-size:20px;flex-shrink:0;margin-top:1px}
+    .lgpd-banner-text{font-size:12.5px;color:rgba(255,255,255,.75);line-height:1.5}
+    .lgpd-banner-text strong{color:rgba(255,255,255,.95)}
+    .btn-start{background:linear-gradient(135deg,#0A7F99,#2167B3);color:#fff;border:none;border-radius:14px;padding:16px 32px;font-size:16px;font-weight:700;cursor:pointer;width:100%;margin-bottom:20px;transition:all .2s;box-shadow:0 6px 20px rgba(10,127,153,.4);letter-spacing:.3px}
+    .btn-start:hover{transform:translateY(-1px);box-shadow:0 8px 26px rgba(10,127,153,.5)}
+    .welcome-links{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+    .welcome-link{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 20px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:12px;text-decoration:none;color:rgba(255,255,255,.8);font-size:12px;font-weight:600;transition:all .15s;min-width:130px;text-align:center}
+    .welcome-link:hover{background:rgba(255,255,255,.14);color:#fff}
+    .welcome-link-icon{font-size:24px}
+    .welcome-divider{width:100%;max-width:500px;margin:28px auto 20px;display:flex;align-items:center;gap:12px}
+    .welcome-divider::before,.welcome-divider::after{content:'';flex:1;border-top:1px solid rgba(255,255,255,.12)}
+    .welcome-divider span{font-size:11px;color:rgba(255,255,255,.35);white-space:nowrap}
+
+    /* ── Header ── */
+    header{background:var(--navy);color:#fff;padding:13px 20px;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,.25)}
+    .logo-row{display:flex;align-items:center;gap:10px;max-width:700px;margin:0 auto}
+    .header-logo{width:32px;height:32px;flex-shrink:0}
+    .header-titles h1{font-size:14px;font-weight:800;letter-spacing:.5px}
+    .header-titles p{font-size:10px;opacity:.55;margin-top:1px}
+
+    /* ── Progress ── */
+    .progress-wrap{background:#fff;border-bottom:1px solid var(--border);padding:10px 20px;position:sticky;top:58px;z-index:99}
+    .progress-inner{max-width:700px;margin:0 auto}
+    .dots{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:5px}
+    .dot{width:26px;height:26px;border-radius:50%;background:var(--border);color:var(--gray);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+    .dot.active{background:var(--teal);color:#fff}
+    .dot.done{background:var(--navy);color:#fff}
+    .step-label{font-size:11px;color:var(--gray);font-weight:500}
+
+    /* ── Main ── */
+    main{max-width:700px;margin:0 auto;padding:20px 16px 120px}
+    .step{display:none}
+    .step.active{display:block}
+
+    /* ── Section card ── */
+    .sec-head{background:var(--navy);color:#fff;padding:13px 16px;border-radius:10px 10px 0 0;display:flex;align-items:center;gap:10px}
+    .sec-num{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0}
+    .sec-head h2{font-size:13px;font-weight:700;letter-spacing:.4px}
+    .sec-body{background:#fff;border:1px solid var(--border);border-top:none;border-radius:0 0 10px 10px;padding:20px;margin-bottom:16px}
+    .sec-intro{font-size:13.5px;color:#444;line-height:1.6;margin-bottom:18px;padding:14px;background:var(--row);border-radius:8px;border-left:3px solid var(--teal)}
+
+    /* ── Fields ── */
+    .field{margin-bottom:16px}
+    .field label{display:block;font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px}
+    .field input,.field select,.field textarea{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:15px;font-family:inherit;color:#1a1a2e;background:#fff;transition:border-color .2s;-webkit-appearance:none;appearance:none}
+    .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px rgba(10,127,153,.1)}
+    .field.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .field.row3{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:end}
+    textarea{min-height:78px;resize:vertical}
+    select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M0 0l6 8 6-8z' fill='%236B7585'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+    .hint{font-size:11.5px;color:var(--gray);margin-top:5px;line-height:1.4}
+    .required{color:var(--red)}
+
+    /* ── Button groups ── */
+    .btn-group{display:flex;gap:8px;flex-wrap:wrap}
+    .btn-op{padding:8px 16px;border:1.5px solid var(--border);border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;background:#fff;color:#444;transition:all .15s;-webkit-appearance:none}
+    .btn-op.sel{background:var(--navy);border-color:var(--navy);color:#fff}
+
+    /* ── Sim/Não ── */
+    .sim-nao{display:flex;gap:8px}
+    .sim-nao button{flex:1;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;background:#fff;transition:all .15s;-webkit-appearance:none}
+    .btn-sim.on{background:var(--green);border-color:var(--green);color:#fff}
+    .btn-nao.on{background:var(--gray);border-color:var(--gray);color:#fff}
+
+    /* ── Checkboxes ── */
+    .chk-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    @media(max-width:480px){.chk-grid{grid-template-columns:1fr}}
+    .chk-item{display:flex;align-items:flex-start;gap:8px;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;transition:all .15s;background:#fff;user-select:none}
+    .chk-item.on{border-color:var(--teal);background:rgba(10,127,153,.06)}
+    .chk-box{width:18px;height:18px;border:2px solid var(--border);border-radius:4px;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .15s;font-size:11px;font-weight:700;color:#fff}
+    .chk-item.on .chk-box{background:var(--teal);border-color:var(--teal)}
+    .chk-txt{font-size:13px;line-height:1.35}
+    .cat-lbl{font-size:12px;font-weight:700;color:var(--navy);margin:14px 0 6px;display:flex;align-items:center;gap:5px;padding:6px 10px;background:var(--row);border-radius:6px}
+    .cat-lbl:first-child{margin-top:0}
+
+    /* ── Procedure cards ── */
+    .proc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
+    @media(max-width:500px){.proc-grid{grid-template-columns:1fr}}
+    .proc-card{display:flex;align-items:flex-start;gap:12px;padding:13px 14px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;background:#fff;transition:all .2s;-webkit-appearance:none;text-align:left;width:100%}
+    .proc-card:hover{border-color:var(--teal);background:rgba(10,127,153,.04)}
+    .proc-card.sel{border-color:var(--teal);background:rgba(10,127,153,.08);box-shadow:0 0 0 3px rgba(10,127,153,.12)}
+    .proc-icon{font-size:26px;flex-shrink:0;line-height:1;margin-top:1px}
+    .proc-text{display:flex;flex-direction:column;gap:4px}
+    .proc-name{font-size:13px;font-weight:700;color:var(--navy);display:block}
+    .proc-ex{font-size:11px;color:var(--gray);line-height:1.4;display:block}
+
+    /* ── Alert box ── */
+    .alert-box{border-radius:8px;padding:11px 13px;font-size:13px;margin:10px 0;line-height:1.5}
+    .alert-info{background:#EFF6FF;border:1px solid #BFDBFE;color:#1e40af}
+    .alert-warn{background:#FFFBEB;border:1px solid #FDE68A;color:#92400e}
+    .alert-danger{background:#FEF2F2;border:1px solid #FECACA;color:#991b1b}
+    .alert-success{background:#F0FDF4;border:1px solid #BBF7D0;color:#14532d}
+
+    /* ── Jejum card ── */
+    .jejum-card{background:linear-gradient(135deg,#f0f9ff,#e0f2fe);border:1px solid #bae6fd;border-radius:12px;padding:16px;margin-bottom:16px}
+    .jejum-title{font-size:13px;font-weight:800;color:#0c4a6e;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+    .jejum-items{display:flex;flex-direction:column;gap:8px}
+    .jejum-item{display:flex;align-items:center;gap:12px;padding:10px 12px;background:rgba(255,255,255,.7);border-radius:8px}
+    .jejum-time{font-size:20px;font-weight:900;color:#0369a1;min-width:36px;text-align:center;flex-shrink:0}
+    .jejum-unit{font-size:9px;font-weight:700;color:#0369a1;display:block;margin-top:-2px}
+    .jejum-desc{font-size:13px;color:#1e40af;line-height:1.3}
+    .jejum-warn{font-size:11.5px;color:#0c4a6e;margin-top:10px;background:rgba(255,255,255,.6);padding:8px 10px;border-radius:6px;line-height:1.4}
+
+    /* ── Medication cards ── */
+    .med-card{background:var(--row);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:10px;position:relative}
+    .med-card .rm{position:absolute;top:10px;right:10px;background:none;border:none;color:var(--gray);cursor:pointer;font-size:20px;line-height:1}
+    .med-card .field{margin-bottom:10px}
+    .med-card .field:last-child{margin-bottom:0}
+    .med-card .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    #add-med-btn{width:100%;padding:10px;border:1.5px dashed var(--border);border-radius:8px;background:#fff;color:var(--teal);font-size:14px;font-weight:600;cursor:pointer;margin-top:8px;transition:all .2s}
+    #add-med-btn:hover{border-color:var(--teal);background:rgba(10,127,153,.04)}
+
+    /* ── File upload ── */
+    .file-drop{border:2px dashed var(--border);border-radius:10px;padding:28px;text-align:center;cursor:pointer;transition:all .2s;background:var(--row)}
+    .file-drop:hover{border-color:var(--teal);background:rgba(10,127,153,.04)}
+    .file-drop p{font-size:14px;color:var(--gray);margin-top:6px}
+    .file-drop .icon{font-size:32px}
+    .file-list{margin-top:10px}
+    .file-item{display:flex;align-items:center;gap:8px;padding:8px 12px;background:#fff;border:1px solid var(--border);border-radius:6px;margin-bottom:6px;font-size:13px}
+    .file-item span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .file-item .rm-file{cursor:pointer;color:var(--gray);flex-shrink:0}
+
+    /* ── Declaration ── */
+    .decl-wrap{display:flex;gap:12px;align-items:flex-start;padding:14px;background:var(--row);border:1.5px solid var(--border);border-radius:8px;cursor:pointer}
+    .decl-box{width:22px;height:22px;border:2px solid var(--border);border-radius:5px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;transition:all .15s}
+    .decl-wrap.on .decl-box{background:var(--green);border-color:var(--green)}
+    .decl-txt{font-size:13px;line-height:1.5;color:#333}
+
+    /* ── Nav footer ── */
+    .nav-footer{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);padding:12px 20px;display:flex;gap:10px;z-index:100}
+    .nav-footer .inner{display:flex;gap:10px;max-width:700px;margin:0 auto;width:100%}
+    .btn{padding:12px 24px;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;border:none;transition:all .15s;-webkit-appearance:none}
+    .btn-primary{background:var(--teal);color:#fff;flex:1}
+    .btn-primary:hover{background:#0a6b7f}
+    .btn-back{background:var(--bg);color:var(--gray);border:1.5px solid var(--border);padding:12px 18px}
+
+    /* ── Success ── */
+    .success-wrap{text-align:center;padding:40px 10px}
+    .success-anim{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--navy));display:flex;align-items:center;justify-content:center;font-size:42px;margin:0 auto 20px;box-shadow:0 10px 30px rgba(10,127,153,.35)}
+    .success-wrap h2{font-size:23px;font-weight:800;color:var(--navy);margin-bottom:8px}
+    .success-wrap p{font-size:14px;color:var(--gray);line-height:1.65;max-width:320px;margin:0 auto}
+    .success-tag{display:inline-block;margin-top:14px;padding:8px 18px;background:rgba(10,127,153,.1);border:1px solid var(--teal);border-radius:20px;color:var(--teal);font-weight:700;font-size:13px}
+    .success-steps{display:flex;flex-direction:column;gap:8px;margin:20px auto;max-width:320px;text-align:left}
+    .success-step{display:flex;align-items:center;gap:10px;font-size:13px;color:#444;padding:10px 14px;background:#f8faff;border-radius:8px;border:1px solid var(--border)}
+    .success-lgpd{margin-top:20px;font-size:11.5px;color:var(--gray);line-height:1.6;max-width:340px;margin-left:auto;margin-right:auto}
+
+    /* ── Loading ── */
+    #loading-overlay{display:none;position:fixed;inset:0;background:rgba(255,255,255,.93);z-index:999;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+    .spinner{width:46px;height:46px;border:4px solid var(--border);border-top-color:var(--teal);border-radius:50%;animation:spin .75s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    #loading-msg{font-size:14px;font-weight:600;color:var(--navy)}
+
+    .divider{border:none;border-top:1px solid var(--border);margin:16px 0}
+    .cond-wrap{display:none}
+    .cond-wrap.show{display:block}
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════ WELCOME SCREEN ══════════════════════ -->
+<div id="s-welcome">
+  <div class="welcome-hero">
+    <div class="welcome-logo-wrap">
+      <svg class="welcome-logo-svg" viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="lg1" cx="40%" cy="35%" r="65%">
+            <stop offset="0%" stop-color="#1e4a7a"/>
+            <stop offset="100%" stop-color="#0d1f3c"/>
+          </radialGradient>
+        </defs>
+        <circle cx="45" cy="45" r="43" fill="url(#lg1)" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+        <circle cx="45" cy="45" r="38" fill="none" stroke="rgba(10,127,153,0.35)" stroke-width="1"/>
+        <text x="45" y="56" text-anchor="middle" font-family="-apple-system,system-ui" font-weight="900" font-size="38" fill="white">P</text>
+        <path d="M15 62 L24 62 L28 53 L33 71 L38 57 L43 63 L48 59 L53 62 L57 56 L62 62 L75 62" stroke="#0A7F99" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+      </svg>
+      <div>
+        <div class="welcome-brand">PREVI<span>NEST</span></div>
+        <div class="welcome-tagline">Avaliação Pré-Operatória Digital</div>
+      </div>
+    </div>
+    <div class="welcome-title">Bem-vindo(a) à sua avaliação pré-anestésica</div>
+    <div class="welcome-subtitle">Este formulário foi desenvolvido para garantir a sua segurança antes do procedimento. Responda com calma — suas informações chegam diretamente ao seu médico anestesiologista.</div>
+
+    <div class="welcome-card">
+      <div class="welcome-features">
+        <div class="welcome-feat">
+          <div class="welcome-feat-icon">🕐</div>
+          <div class="welcome-feat-text"><strong>Rápido e simples</strong>Leva aproximadamente 5 a 10 minutos para preencher</div>
+        </div>
+        <div class="welcome-feat">
+          <div class="welcome-feat-icon">🔒</div>
+          <div class="welcome-feat-text"><strong>Seus dados estão protegidos</strong>Criptografia de ponta a ponta, em conformidade com a LGPD</div>
+        </div>
+        <div class="welcome-feat">
+          <div class="welcome-feat-icon">👨‍⚕️</div>
+          <div class="welcome-feat-text"><strong>Enviado diretamente ao médico</strong>As informações chegam ao aplicativo Previanest do seu anestesiologista</div>
+        </div>
+        <div class="welcome-feat">
+          <div class="welcome-feat-icon">📱</div>
+          <div class="welcome-feat-text"><strong>Sem necessidade de baixar app</strong>Funciona diretamente no navegador do celular ou computador</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lgpd-banner">
+      <div class="lgpd-banner-icon">⚖️</div>
+      <div class="lgpd-banner-text"><strong>Privacidade e LGPD:</strong> Seus dados de saúde são coletados exclusivamente para fins de avaliação pré-anestésica e segurança durante o procedimento, conforme a Lei 13.709/2018. Você tem direito ao acesso, correção e exclusão das suas informações a qualquer momento.</div>
+    </div>
+
+    <button class="btn-start" onclick="startForm()">Preencher minha ficha →</button>
+
+    <div class="welcome-divider"><span>Links úteis</span></div>
+
+    <div class="welcome-links">
+      <a href="https://lzemed.github.io/previanest/" target="_blank" class="welcome-link">
+        <span class="welcome-link-icon">🔒</span>
+        <span>Política de<br>Privacidade</span>
+      </a>
+      <a href="https://lzemed.github.io/previanest-support/" target="_blank" class="welcome-link">
+        <span class="welcome-link-icon">💬</span>
+        <span>Suporte ao<br>Usuário</span>
+      </a>
+    </div>
+
+    <div style="margin-top:28px;font-size:11px;color:rgba(255,255,255,.3);text-align:center">
+      © Previanest — Sistema de Avaliação Pré-Operatória Digital<br>Desenvolvido para uso médico profissional
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ HEADER ══════════════════════ -->
+<header id="main-header" style="display:none">
+  <div class="logo-row">
+    <svg class="header-logo" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="16" cy="16" r="15" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+      <text x="16" y="22" text-anchor="middle" font-family="-apple-system,system-ui" font-weight="900" font-size="16" fill="white">P</text>
+    </svg>
+    <div class="header-titles">
+      <h1>FICHA PRÉ-ANESTÉSICA</h1>
+      <p>Previanest — Avaliação Pré-Operatória Digital</p>
+    </div>
+  </div>
+</header>
+
+<div class="progress-wrap" id="progress-wrap" style="display:none">
+  <div class="progress-inner">
+    <div class="dots" id="dots"></div>
+    <div class="step-label" id="step-label"></div>
+  </div>
+</div>
+
+<main id="form-main" style="display:none">
+
+<!-- STEP 0 — MÉDICO -->
+<div class="step active" id="s0">
+  <div class="sec-head"><div class="sec-num">👨‍⚕️</div><h2>IDENTIFICAÇÃO DO MÉDICO</h2></div>
+  <div class="sec-body">
+    <div class="sec-intro">
+      Para que sua ficha chegue ao destino certo, precisamos identificar seu médico anestesiologista. Digite o número do CRM dele — você pode encontrar essa informação no encaminhamento médico ou perguntar diretamente à clínica.
+    </div>
+    <div id="crm-wrap">
+      <div class="field row3">
+        <div>
+          <label>UF do CRM <span class="required">*</span></label>
+          <select id="uf-medico">
+            <option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option>
+            <option value="AM">AM</option><option value="BA">BA</option><option value="CE">CE</option>
+            <option value="DF">DF</option><option value="ES">ES</option><option value="GO">GO</option>
+            <option value="MA">MA</option><option value="MT">MT</option><option value="MS">MS</option>
+            <option value="MG">MG</option><option value="PA">PA</option><option value="PB">PB</option>
+            <option value="PR">PR</option><option value="PE">PE</option><option value="PI">PI</option>
+            <option value="RJ">RJ</option><option value="RN">RN</option><option value="RS">RS</option>
+            <option value="RO">RO</option><option value="RR">RR</option><option value="SC">SC</option>
+            <option value="SP" selected>SP</option><option value="SE">SE</option><option value="TO">TO</option>
+          </select>
+        </div>
+        <div>
+          <label>Número do CRM <span class="required">*</span></label>
+          <input type="text" id="crm-medico" placeholder="Ex: 123456" inputmode="numeric">
+        </div>
+      </div>
+      <p class="hint">💡 O CRM é o registro profissional do médico anestesiologista. Você encontra no encaminhamento ou pode pedir à secretária da clínica.</p>
+    </div>
+    <div id="s0-error" class="alert-box alert-danger" style="display:none"></div>
+  </div>
+</div>
+
+<!-- STEP 1 — IDENTIFICAÇÃO + PROCEDIMENTO -->
+<div class="step" id="s1">
+  <div class="sec-head"><div class="sec-num">01</div><h2>SEUS DADOS PESSOAIS</h2></div>
+  <div class="sec-body">
+    <div class="sec-intro">Preencha seus dados pessoais com atenção. Essas informações são usadas para identificar você com segurança no prontuário médico.</div>
+    <div class="field">
+      <label>Nome completo <span class="required">*</span></label>
+      <input type="text" id="nome" placeholder="Seu nome completo" autocomplete="name">
+    </div>
+    <div class="field row2">
+      <div>
+        <label>Data de nascimento <span class="required">*</span></label>
+        <input type="text" id="data-nasc" placeholder="DD/MM/AAAA" maxlength="10" inputmode="numeric">
+      </div>
+      <div>
+        <label>Sexo biológico <span class="required">*</span></label>
+        <div class="btn-group" style="margin-top:0">
+          <button class="btn-op" onclick="selectSexo('Masculino')">Masculino</button>
+          <button class="btn-op" onclick="selectSexo('Feminino')">Feminino</button>
+          <button class="btn-op" onclick="selectSexo('Outro')">Outro</button>
+        </div>
+        <p class="hint">Importante para o planejamento anestésico</p>
+      </div>
+    </div>
+    <div class="field row2">
+      <div>
+        <label>Peso (kg) <span class="required">*</span></label>
+        <input type="text" id="peso" placeholder="Ex: 72" inputmode="decimal">
+      </div>
+      <div>
+        <label>Altura (cm) <span class="required">*</span></label>
+        <input type="text" id="altura" placeholder="Ex: 170" inputmode="decimal">
+      </div>
+    </div>
+    <p class="hint" style="margin-top:-8px;margin-bottom:14px">⚖️ Peso e altura são usados para calcular doses seguras dos medicamentos anestésicos.</p>
+    <hr class="divider">
+    <div class="field">
+      <label>Quem está preenchendo este formulário? <span class="required">*</span></label>
+      <div class="btn-group" id="informante-group">
+        <button class="btn-op sel" onclick="selectInformante('paciente')">O próprio paciente</button>
+        <button class="btn-op" onclick="selectInformante('responsavel')">Responsável legal</button>
+      </div>
+    </div>
+    <div class="cond-wrap" id="resp-wrap">
+      <div class="field">
+        <label>Nome do responsável <span class="required">*</span></label>
+        <input type="text" id="resp-nome" placeholder="Nome completo do responsável">
+      </div>
+      <div class="field">
+        <label>Relação com o paciente <span class="required">*</span></label>
+        <div class="btn-group">
+          <button class="btn-op" onclick="selectRelacao('Pai')">Pai</button>
+          <button class="btn-op" onclick="selectRelacao('Mãe')">Mãe</button>
+          <button class="btn-op" onclick="selectRelacao('Filho/Filha')">Filho/Filha</button>
+          <button class="btn-op" onclick="selectRelacao('Cônjuge')">Cônjuge</button>
+          <button class="btn-op" onclick="selectRelacao('Tutor')">Tutor legal</button>
+          <button class="btn-op" onclick="selectRelacao('Outro')">Outro</button>
+        </div>
+      </div>
+    </div>
+    <hr class="divider">
+    <div class="field">
+      <label>Contato de emergência</label>
+      <input type="text" id="emerg-nome" placeholder="Nome do contato de emergência" autocomplete="name">
+    </div>
+    <div class="field">
+      <label>Telefone de emergência</label>
+      <input type="tel" id="emerg-tel" placeholder="(11) 99999-9999" autocomplete="tel">
+    </div>
+  </div>
+
+  <div class="sec-head" style="border-radius:10px 10px 0 0;margin-top:4px"><div class="sec-num">🏥</div><h2>PROCEDIMENTO PREVISTO</h2></div>
+  <div class="sec-body">
+    <div class="sec-intro">Selecione a opção que melhor descreve o procedimento que você vai realizar. Não precisa saber o nome técnico — escolha pela região do corpo ou tipo de procedimento.</div>
+    <div class="field">
+      <label>Categoria do procedimento <span class="required">*</span></label>
+      <div class="proc-grid" id="proc-group">
+        <button class="proc-card" onclick="selectProc('Exames e Procedimentos')">
+          <span class="proc-icon">🔬</span>
+          <span class="proc-text"><span class="proc-name">Exame com Sedação</span><span class="proc-ex">Endoscopia, colonoscopia, broncoscopia, cateterismo, biópsia</span></span>
+        </button>
+        <button class="proc-card" onclick="selectProc('Cirurgias por Vídeo')">
+          <span class="proc-icon">🎥</span>
+          <span class="proc-text"><span class="proc-name">Cirurgia por Vídeo</span><span class="proc-ex">Vesícula, hérnia, apêndice, ovário, cisto, bypass gástrico</span></span>
+        </button>
+        <button class="proc-card" onclick="selectProc('Membros Inferiores')">
+          <span class="proc-icon">🦵</span>
+          <span class="proc-text"><span class="proc-name">Perna, Joelho ou Pé</span><span class="proc-ex">Joelho, quadril, tornozelo, pé, coxa, varizes</span></span>
+        </button>
+        <button class="proc-card" onclick="selectProc('Abdômen Baixo')">
+          <span class="proc-icon">🫃</span>
+          <span class="proc-text"><span class="proc-name">Barriga Baixa / Pelve</span><span class="proc-ex">Próstata, bexiga, útero, reto, hérnia inguinal</span></span>
+        </button>
+        <button class="proc-card" onclick="selectProc('Abdômen Alto')">
+          <span class="proc-icon">🫀</span>
+          <span class="proc-text"><span class="proc-name">Barriga Alta / Tórax</span><span class="proc-ex">Estômago, fígado, pâncreas, esôfago, pulmão, coração</span></span>
+        </button>
+        <button class="proc-card" onclick="selectProc('Membros Superiores')">
+          <span class="proc-icon">💪</span>
+          <span class="proc-text"><span class="proc-name">Braço, Ombro ou Mão</span><span class="proc-ex">Ombro, cotovelo, pulso, mão, túnel do carpo</span></span>
+        </button>
+        <button class="proc-card" onclick="selectProc('Cabeça e Pescoço')">
+          <span class="proc-icon">🧠</span>
+          <span class="proc-text"><span class="proc-name">Cabeça ou Pescoço</span><span class="proc-ex">Tireoide, nariz, seios da face, ouvido, olho, cérebro</span></span>
+        </button>
+        <button class="proc-card" onclick="selectProc('Outro')">
+          <span class="proc-icon">❓</span>
+          <span class="proc-text"><span class="proc-name">Outro procedimento</span><span class="proc-ex">Não encontrei meu procedimento nas opções acima</span></span>
+        </button>
+      </div>
+    </div>
+    <div class="field">
+      <label>Descreva o procedimento (opcional)</label>
+      <input type="text" id="proc-nome" placeholder="Ex: Retirada da vesícula, prótese de joelho...">
+      <p class="hint">Se souber o nome, escreva aqui. Se não souber, deixe em branco — a categoria acima já é suficiente.</p>
+    </div>
+    <div id="s1-error" class="alert-box alert-danger" style="display:none"></div>
+  </div>
+</div>
+
+<!-- STEP 2 — HISTÓRICO CIRÚRGICO -->
+<div class="step" id="s2">
+  <div class="sec-head"><div class="sec-num">02</div><h2>HISTÓRICO CIRÚRGICO E ANESTÉSICO</h2></div>
+  <div class="sec-body">
+    <div class="sec-intro">Informações sobre cirurgias e anestesias anteriores ajudam o médico a antecipar possíveis reações e planejar a anestesia com mais segurança para você.</div>
+    <div class="field">
+      <label>Já passou por alguma cirurgia anteriormente?</label>
+      <div class="sim-nao">
+        <button class="btn-sim" onclick="toggle('teveCircurgia', true, 'cirug-wrap')">Sim</button>
+        <button class="btn-nao on" onclick="toggle('teveCircurgia', false, 'cirug-wrap')">Não</button>
+      </div>
+    </div>
+    <div class="cond-wrap" id="cirug-wrap">
+      <div class="field">
+        <label>Descreva as cirurgias realizadas</label>
+        <textarea id="desc-cirurgias" placeholder="Ex: Retirada do apêndice em 2015, cirurgia no joelho em 2019..."></textarea>
+      </div>
+      <div class="field">
+        <label>Que tipo de anestesia foi utilizada? (marque todas que se aplicam)</label>
+        <div class="chk-grid" id="anest-tipos"></div>
+        <p class="hint">Se não lembrar, selecione "Não sei informar" — isso é completamente normal.</p>
+      </div>
+    </div>
+    <hr class="divider">
+    <div class="field">
+      <label>Teve alguma complicação ou problema com anestesia?</label>
+      <div class="sim-nao">
+        <button class="btn-sim" onclick="toggle('teveCompl', true, 'compl-wrap')">Sim</button>
+        <button class="btn-nao on" onclick="toggle('teveCompl', false, 'compl-wrap')">Não</button>
+      </div>
+      <p class="hint" style="margin-top:6px">Ex: náuseas intensas, reação alérgica, dificuldade para acordar, febre alta após cirurgia</p>
+    </div>
+    <div class="cond-wrap" id="compl-wrap">
+      <div class="field">
+        <label>Descreva o que aconteceu</label>
+        <textarea id="desc-compl" placeholder="Descreva a complicação da forma que se lembrar..."></textarea>
+      </div>
+    </div>
+    <hr class="divider">
+    <div class="field">
+      <label>Algum familiar direto (pais, irmãos, filhos) teve complicação grave com anestesia?</label>
+      <div class="sim-nao">
+        <button class="btn-sim" onclick="toggle('familiarCompl', true, 'familiar-wrap')">Sim</button>
+        <button class="btn-nao on" onclick="toggle('familiarCompl', false, 'familiar-wrap')">Não</button>
+      </div>
+      <p class="hint" style="margin-top:6px">Algumas reações anestésicas têm componente genético e podem se repetir na família.</p>
+    </div>
+    <div class="cond-wrap" id="familiar-wrap">
+      <div class="field">
+        <label>Descreva o que ocorreu com o familiar</label>
+        <textarea id="desc-familiar" placeholder="Ex: Meu pai teve febre muito alta durante uma cirurgia ortopédica..."></textarea>
+      </div>
+    </div>
+    <div id="s2-error" class="alert-box alert-danger" style="display:none"></div>
+  </div>
+</div>
+
+<!-- STEP 3 — MEDICAMENTOS -->
+<div class="step" id="s3">
+  <div class="sec-head"><div class="sec-num">03</div><h2>MEDICAMENTOS EM USO</h2></div>
+  <div class="sec-body">
+    <div class="sec-intro">Alguns medicamentos podem interferir na anestesia ou aumentar riscos durante a cirurgia. Liste todos que você usa, incluindo remédios de pressão, diabetes, coração e anticoagulantes.</div>
+    <div class="alert-box alert-warn">⚠️ <strong>Importante:</strong> Não interrompa nenhum medicamento por conta própria antes da cirurgia. Aguarde a orientação do seu médico.</div>
+    <div class="field" style="margin-top:12px">
+      <label>Está tomando algum medicamento regularmente?</label>
+      <div class="sim-nao">
+        <button class="btn-sim" onclick="toggle('usaMed', true, 'meds-wrap')">Sim</button>
+        <button class="btn-nao on" onclick="toggle('usaMed', false, 'meds-wrap')">Não</button>
+      </div>
+    </div>
+    <div class="cond-wrap" id="meds-wrap">
+      <div id="meds-list"></div>
+      <button id="add-med-btn" onclick="addMed()">+ Adicionar medicamento</button>
+    </div>
+    <hr class="divider">
+    <div class="field">
+      <label>Usa vitaminas, suplementos ou fitoterápicos?</label>
+      <div class="sim-nao">
+        <button class="btn-sim" onclick="toggle('usaSupl', true, 'supl-wrap')">Sim</button>
+        <button class="btn-nao on" onclick="toggle('usaSupl', false, 'supl-wrap')">Não</button>
+      </div>
+      <p class="hint" style="margin-top:6px">Inclua vitaminas, ômega 3, ginkgo biloba, fitoterápicos, chás medicinais, etc. Alguns podem aumentar sangramento.</p>
+    </div>
+    <div class="cond-wrap" id="supl-wrap">
+      <div class="field">
+        <label>Quais suplementos você usa?</label>
+        <textarea id="desc-supl" placeholder="Ex: Vitamina D 2000UI, Ômega 3, Ginkgo Biloba, Ashwagandha..."></textarea>
+      </div>
+    </div>
+    <hr class="divider">
+    <div class="field">
+      <label>Tem alergia a algum medicamento?</label>
+      <div class="sim-nao">
+        <button class="btn-sim" onclick="toggle('alergiaMed', true, 'alerg-wrap')">Sim</button>
+        <button class="btn-nao on" onclick="toggle('alergiaMed', false, 'alerg-wrap')">Não</button>
+      </div>
+    </div>
+    <div class="cond-wrap" id="alerg-wrap">
+      <div class="alert-box alert-danger">🚨 <strong>Atenção crítica:</strong> Esta informação é essencial para evitar reações graves durante a anestesia. Descreva com o máximo de detalhes possível.</div>
+      <div class="field">
+        <label>Qual(is) medicamento(s) e qual foi a reação?</label>
+        <textarea id="desc-alerg-med" placeholder="Ex: Dipirona — urticária intensa&#10;Penicilina — inchou a garganta e fui para o pronto-socorro..."></textarea>
+      </div>
+    </div>
+    <div id="s3-error" class="alert-box alert-danger" style="display:none"></div>
+  </div>
+</div>
+
+<!-- STEP 4 — CONDIÇÕES DE SAÚDE -->
+<div class="step" id="s4">
+  <div class="sec-head"><div class="sec-num">04</div><h2>DOENÇAS E CONDIÇÕES DE SAÚDE</h2></div>
+  <div class="sec-body">
+    <div class="sec-intro">Marque todas as condições que você tem ou já teve. Não se preocupe se a lista parecer grande — selecione apenas o que se aplica a você. Essas informações permitem que o médico escolha a técnica anestésica mais segura.</div>
+    <div id="cond-list"></div>
+    <hr class="divider">
+    <div class="field">
+      <label>Outras condições não listadas acima</label>
+      <textarea id="outras-cond" placeholder="Se tiver alguma doença ou condição que não apareceu na lista acima, escreva aqui..."></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 5 — HÁBITOS -->
+<div class="step" id="s5">
+  <div class="sec-head"><div class="sec-num">05</div><h2>HÁBITOS E ESTILO DE VIDA</h2></div>
+  <div class="sec-body">
+    <div class="sec-intro">Hábitos como tabagismo, consumo de álcool e uso de drogas afetam diretamente como seu organismo reage à anestesia. Responda com honestidade — essas informações são confidenciais e usadas apenas para sua segurança.</div>
+    <div class="field"><label>Fuma ou fumou nos últimos 2 anos?</label>
+      <div class="sim-nao">
+        <button class="btn-sim" onclick="toggle('fumante', true, 'tabaco-wrap')">Sim</button>
+        <button class="btn-nao on" onclick="toggle('fumante', false, 'tabaco-wrap')">Não</button>
+      </div>
+    </div>
+    <div class="cond-wrap" id="tabaco-wrap">
+      <div class="field"><label>Quantidade e há quanto tempo</label>
+        <input type="text" id="desc-tabaco" placeholder="Ex: 1 maço por dia há 10 anos / Parei há 6 meses"></div>
+    </div>
+    <hr class="divider">
+    <div class="field"><label>Consome bebidas alcoólicas?</label>
+      <div class="sim-nao">
+        <button class="btn-sim" onclick="toggle('alcool', true, 'alcool-wrap')">Sim</button>
+        <button class="btn-nao on" onclick="toggle('alcool', false, 'alcool-wrap')">Não</button>
+      </div>
+    </div>
+    <div class="cond-wrap" id="alcool-wrap">
+      <div class="field"><label>Frequência e quantidade aproximada</label>
+        <input type="text" id="desc-alcool" placeholder="Ex: Fins de semana, 2 a 3 doses / Diariamente, 1 copo de vinho"></div>
+    </div>
+    <hr class="divider">
+    <div class="field"><label>Usa ou já usou substâncias ilícitas (drogas)?</label>
+      <div class="sim-nao">
+        <button class="btn-sim" onclick="toggle('drogas', true, 'drogas-wrap')">Sim</button>
+        <button class="btn-nao on" onclick="toggle('drogas', false, 'drogas-wrap')">Não</button>
+      </div>
+      <p class="hint" style="margin-top:6px">Responda com honestidade. Essas informações são sigilosas e essenciais para evitar interações perigosas com os anestésicos.</p>
+    </div>
+    <div class="cond-wrap" id="drogas-wrap">
+      <div class="field"><label>Quais e com que frequência</label>
+        <textarea id="desc-drogas" placeholder="Ex: Maconha ocasionalmente / Cocaína (uso passado, parei há 2 anos)"></textarea></div>
+    </div>
+    <hr class="divider">
+    <div class="field"><label>Pratica atividade física regularmente?</label>
+      <div class="sim-nao">
+        <button class="btn-sim" onclick="toggle('ativFisica', true, 'ativ-wrap')">Sim</button>
+        <button class="btn-nao on" onclick="toggle('ativFisica', false, 'ativ-wrap')">Não</button>
+      </div>
+    </div>
+    <div class="cond-wrap" id="ativ-wrap">
+      <div class="field"><label>Qual atividade e com que frequência</label>
+        <input type="text" id="desc-ativ" placeholder="Ex: Caminhada 3x por semana / Musculação 5x por semana"></div>
+    </div>
+    <hr class="divider">
+    <div class="field"><label>Tem dificuldade para dormir, ronco intenso ou apneia do sono?</label>
+      <div class="sim-nao">
+        <button class="btn-sim" onclick="toggle('sono', true, 'sono-wrap')">Sim</button>
+        <button class="btn-nao on" onclick="toggle('sono', false, 'sono-wrap')">Não</button>
+      </div>
+      <p class="hint" style="margin-top:6px">A apneia do sono é um fator de risco importante na anestesia — informe se usa CPAP.</p>
+    </div>
+    <div class="cond-wrap" id="sono-wrap">
+      <div class="field"><label>Descreva o distúrbio do sono</label>
+        <input type="text" id="desc-sono" placeholder="Ex: Apneia diagnosticada, uso de CPAP / Ronco forte, nunca investiguei"></div>
+    </div>
+    <div id="s5-error" class="alert-box alert-danger" style="display:none"></div>
+  </div>
+</div>
+
+<!-- STEP 6 — SAÚDE FEMININA -->
+<div class="step" id="s6">
+  <div class="sec-head"><div class="sec-num">06</div><h2>SAÚDE FEMININA</h2></div>
+  <div class="sec-body">
+    <div class="sec-intro">Estas informações são essenciais para a segurança de você e de um possível bebê durante a anestesia. Responda com honestidade — tudo é confidencial.</div>
+    <div class="field"><label>Existe possibilidade de estar grávida?</label>
+      <div class="sim-nao">
+        <button class="btn-sim" onclick="setState('possivelGravidez', true)">Sim</button>
+        <button class="btn-nao on" onclick="setState('possivelGravidez', false)">Não</button>
+      </div>
+      <p class="hint" style="margin-top:6px">Em caso de dúvida, marque "Sim". O médico poderá solicitar um exame de sangue (beta-hCG) para confirmar.</p>
+    </div>
+    <hr class="divider">
+    <div class="field"><label>Está amamentando?</label>
+      <div class="sim-nao">
+        <button class="btn-sim" onclick="setState('amamentando', true)">Sim</button>
+        <button class="btn-nao on" onclick="setState('amamentando', false)">Não</button>
+      </div>
+    </div>
+    <hr class="divider">
+    <div class="field"><label>Usa anticoncepcional (pílula, DIU, injeção, adesivo)?</label>
+      <div class="sim-nao">
+        <button class="btn-sim" onclick="setState('anticoncepcional', true)">Sim</button>
+        <button class="btn-nao on" onclick="setState('anticoncepcional', false)">Não</button>
+      </div>
+      <p class="hint" style="margin-top:6px">Anticoncepcionais hormonais podem aumentar o risco de trombose — importante para o planejamento cirúrgico.</p>
+    </div>
+    <hr class="divider">
+    <div class="field"><label>Já atingiu a menopausa?</label>
+      <div class="sim-nao">
+        <button class="btn-sim" onclick="toggleMenopausa(true)">Sim</button>
+        <button class="btn-nao on" onclick="toggleMenopausa(false)">Não</button>
+      </div>
+    </div>
+    <div class="cond-wrap" id="mens-wrap" style="display:block">
+      <div class="field"><label>Data da última menstruação (se souber)</label>
+        <input type="text" id="ultima-mens" placeholder="DD/MM/AAAA" maxlength="10" inputmode="numeric"></div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 7 — PREPARAÇÃO -->
+<div class="step" id="s7">
+  <div class="sec-head"><div class="sec-num">07</div><h2>PREPARAÇÃO PRÉ-OPERATÓRIA</h2></div>
+  <div class="sec-body">
+    <div class="jejum-card">
+      <div class="jejum-title">🍽️ Orientações de Jejum Pré-Operatório</div>
+      <div class="jejum-items">
+        <div class="jejum-item">
+          <div><div class="jejum-time">8h</div><div class="jejum-unit">horas</div></div>
+          <div class="jejum-desc">Alimentos sólidos, leite integral, sucos com polpa e refeições em geral</div>
+        </div>
+        <div class="jejum-item">
+          <div><div class="jejum-time">4h</div><div class="jejum-unit">horas</div></div>
+          <div class="jejum-desc">Leite materno — para bebês e lactentes <span style="font-size:10px;color:#0369a1">(conforme diretrizes ASA/SBA)</span></div>
+        </div>
+        <div class="jejum-item">
+          <div><div class="jejum-time">6h</div><div class="jejum-unit">horas</div></div>
+          <div class="jejum-desc">Fórmulas infantis e leite de vaca</div>
+        </div>
+        <div class="jejum-item">
+          <div><div class="jejum-time">2h</div><div class="jejum-unit">horas</div></div>
+          <div class="jejum-desc">Água, chá claro sem açúcar ou suco de fruta sem polpa (somente adultos saudáveis)</div>
+        </div>
+      </div>
+      <div class="jejum-warn">⚠️ Estas são diretrizes gerais. Siga <strong>sempre</strong> a orientação específica do seu médico ou da clínica. Em caso de dúvida, o jejum de 8 horas para sólidos é a regra mais segura.</div>
+    </div>
+
+    <div class="field"><label>Sabe a data prevista da cirurgia?</label>
+      <div class="sim-nao">
+        <button class="btn-sim" onclick="toggle('dataCirurgKnown', true, 'data-cir-wrap')">Sim</button>
+        <button class="btn-nao on" onclick="toggle('dataCirurgKnown', false, 'data-cir-wrap')">Não</button>
+      </div>
+    </div>
+    <div class="cond-wrap" id="data-cir-wrap">
+      <div class="field"><label>Data prevista da cirurgia</label>
+        <input type="text" id="data-cirurgia" placeholder="DD/MM/AAAA" maxlength="10" inputmode="numeric" onblur="validarDataCirurgia()">
+        <div id="data-cir-error" class="alert-box alert-danger" style="display:none;margin-top:6px"></div>
+      </div>
+    </div>
+    <div id="s7-error" class="alert-box alert-danger" style="display:none;margin-bottom:10px"></div>
+    <hr class="divider">
+    <div class="field"><label>Usa prótese dentária (dentadura, ponte removível)?</label>
+      <div class="sim-nao">
+        <button class="btn-sim" onclick="setState('proteseDentaria', true)">Sim</button>
+        <button class="btn-nao on" onclick="setState('proteseDentaria', false)">Não</button>
+      </div>
+      <p class="hint" style="margin-top:6px">Próteses devem ser retiradas antes da anestesia para evitar riscos durante a intubação.</p>
+    </div>
+    <hr class="divider">
+    <div class="field"><label>Tem piercing no corpo ou implante metálico (parafuso, placa, marca-passo)?</label>
+      <div class="sim-nao">
+        <button class="btn-sim" onclick="setState('piercingImplante', true)">Sim</button>
+        <button class="btn-nao on" onclick="setState('piercingImplante', false)">Não</button>
+      </div>
+      <p class="hint" style="margin-top:6px">Metais podem interferir em bisturis elétricos e equipamentos de monitoramento.</p>
+    </div>
+    <hr class="divider">
+    <div class="field"><label>Tem alergia ao látex (borracha de luvas cirúrgicas)?</label>
+      <div class="sim-nao">
+        <button class="btn-sim" onclick="setState('alergiaLatex', true)">Sim — ⚠️ Informar equipe</button>
+        <button class="btn-nao on" onclick="setState('alergiaLatex', false)">Não</button>
+      </div>
+      <p class="hint" style="margin-top:6px">Alergia ao látex é séria e exige que a cirurgia seja feita em ambiente livre de látex.</p>
+    </div>
+    <hr class="divider">
+    <div class="field"><label>Tem alergia alimentar?</label>
+      <div class="sim-nao">
+        <button class="btn-sim" onclick="toggle('alergiaAlim', true, 'alim-wrap')">Sim</button>
+        <button class="btn-nao on" onclick="toggle('alergiaAlim', false, 'alim-wrap')">Não</button>
+      </div>
+    </div>
+    <div class="cond-wrap" id="alim-wrap">
+      <div class="field"><label>Quais alimentos e qual a reação</label>
+        <input type="text" id="desc-alim" placeholder="Ex: Amendoim — anafilaxia / Frutos do mar — urticária"></div>
+    </div>
+    <hr class="divider">
+    <div class="field"><label>Terá um acompanhante adulto para levá-lo(a) para casa após o procedimento?</label>
+      <div class="sim-nao">
+        <button class="btn-sim" onclick="setState('acompanhante', true)">Sim, confirmado</button>
+        <button class="btn-nao on" onclick="setState('acompanhante', false)">Ainda não confirmado</button>
+      </div>
+      <p class="hint" style="margin-top:6px">⚠️ <strong>Para cirurgias ambulatoriais</strong> (alta no mesmo dia): é obrigatório ter um acompanhante adulto responsável para levá-lo para casa. Os efeitos residuais da anestesia — como sonolência, reflexos alterados e raciocínio lento — persistem por horas, tornando perigoso dirigir ou se locomover sozinho, mesmo de transporte por aplicativo.<br><br>✅ <strong>Para internações hospitalares</strong>: se você ficará hospitalizado e receberá alta nos dias seguintes, após total recuperação dos efeitos da anestesia e com liberação médica, o acompanhante para o deslocamento não é obrigatório.</p>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 8 — DOCUMENTOS -->
+<div class="step" id="s8">
+  <div class="sec-head"><div class="sec-num">08</div><h2>DOCUMENTOS COMPLEMENTARES</h2></div>
+  <div class="sec-body">
+    <div class="sec-intro">Esta etapa é opcional. Se tiver exames recentes, laudos médicos, eletrocardiograma ou receitas, você pode enviá-los aqui. Isso ajuda o médico a ter uma visão mais completa da sua saúde.</div>
+    <div class="alert-box alert-info">📎 Formatos aceitos: PDF, fotos (JPG/PNG), documentos Word. Até 10 arquivos.</div>
+    <div class="file-drop" onclick="document.getElementById('file-input').click()">
+      <div class="icon">📂</div>
+      <strong>Toque para selecionar arquivos</strong>
+      <p>Ou arraste os arquivos aqui</p>
+    </div>
+    <input type="file" id="file-input" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.heic" style="display:none">
+    <div class="file-list" id="file-list"></div>
+    <div class="alert-box alert-warn" style="margin-top:12px">🔒 Os arquivos enviados são criptografados e acessíveis apenas pelo seu médico anestesiologista.</div>
+  </div>
+</div>
+
+<!-- STEP 9 — CONFIRMAÇÃO -->
+<div class="step" id="s9">
+  <div class="sec-head"><div class="sec-num">09</div><h2>REVISÃO E CONFIRMAÇÃO</h2></div>
+  <div class="sec-body">
+    <div class="field">
+      <label>Observações livres para o médico</label>
+      <textarea id="obs-livres" placeholder="Tem algo mais que gostaria de comunicar ao médico? Ansiedade com anestesia, dúvidas, informações que não couberam nas perguntas anteriores..." style="min-height:100px"></textarea>
+    </div>
+    <hr class="divider">
+    <div style="margin-bottom:8px;font-size:13px;font-weight:700;color:var(--navy)">📋 Resumo da sua ficha</div>
+    <div id="resumo" style="background:var(--row);border:1px solid var(--border);border-radius:8px;padding:14px;font-size:13px;line-height:1.9;margin-bottom:16px"></div>
+    <hr class="divider">
+    <div class="alert-box alert-info" style="margin-bottom:14px">
+      <strong>⚖️ Proteção de Dados — LGPD:</strong> As informações preenchidas neste formulário são dados sensíveis de saúde, coletados exclusivamente para avaliação pré-anestésica e proteção da sua segurança durante o procedimento cirúrgico. Seus dados são armazenados de forma criptografada, acessíveis apenas pelo médico responsável, e protegidos nos termos da Lei nº 13.709/2018 (Lei Geral de Proteção de Dados). Você tem direito ao acesso, correção e exclusão das suas informações.
+    </div>
+    <div class="decl-wrap" id="decl-wrap" onclick="toggleDecl()">
+      <div class="decl-box" id="decl-box"></div>
+      <div class="decl-txt">
+        <strong>Declaro que li e revisiei todas as minhas respostas</strong>, confirmo que são verdadeiras e completas, e estou ciente de que estas informações serão utilizadas exclusivamente para garantir minha segurança durante a anestesia.
+      </div>
+    </div>
+    <div id="s9-error" class="alert-box alert-danger" style="display:none;margin-top:10px"></div>
+  </div>
+</div>
+
+<!-- SUCCESS -->
+<div class="step" id="s-success">
+  <div class="success-wrap">
+    <div class="success-anim">✓</div>
+    <h2>Ficha enviada com sucesso!</h2>
+    <p>Sua ficha pré-anestésica foi entregue com segurança ao médico anestesiologista.<br>Ele a receberá diretamente no aplicativo Previanest.</p>
+    <div class="success-tag" id="success-tag"></div>
+    <div class="success-steps">
+      <div class="success-step">✅ Seus dados foram criptografados e enviados com segurança</div>
+      <div class="success-step">📱 O médico receberá uma notificação no aplicativo Previanest</div>
+      <div class="success-step">📄 Um PDF da ficha foi gerado e armazenado automaticamente</div>
+      <div class="success-step">🔒 Apenas o seu médico tem acesso às suas informações</div>
+    </div>
+    <div class="success-lgpd">
+      <strong>⚖️ Aviso LGPD:</strong> Este documento é confidencial e protegido pela Lei nº 13.709/2018. Suas informações de saúde são tratadas com sigilo absoluto e usadas exclusivamente para fins médicos.
+    </div>
+  </div>
+</div>
+
+</main>
+
+<div class="nav-footer" id="nav-footer" style="display:none">
+  <div class="inner">
+    <button class="btn btn-back" id="btn-back" onclick="prevStep()" style="display:none">← Voltar</button>
+    <button class="btn btn-primary" id="btn-next" onclick="nextStep()">Próximo →</button>
+  </div>
+</div>
+
+<div id="loading-overlay">
+  <div class="spinner"></div>
+  <div id="loading-msg">Aguarde...</div>
+</div>
+
+<script>
+const firebaseConfig = {
+  apiKey:            "AIzaSyBHiBSTsKaxrhl_PpRcxaZmZpk6X4uH_W4",
+  authDomain:        "previanest.firebaseapp.com",
+  projectId:         "previanest",
+  storageBucket:     "previanest.firebasestorage.app",
+  messagingSenderId: "736869897263",
+  appId:             "1:736869897263:web:983bfa71b90dec8b64e2da"
+};
+firebase.initializeApp(firebaseConfig);
+const auth    = firebase.auth();
+const db      = firebase.firestore();
+const storage = firebase.storage();
+
+// ── STATE ──
+let currentStep = 0;
+const STEPS = ['s0','s1','s2','s3','s4','s5','s6','s7','s8','s9'];
+const STEP_LABELS = ['Médico','Identificação','Histórico','Medicamentos','Condições','Hábitos','Saúde Feminina','Preparação','Documentos','Confirmação'];
+let boolState = {teveCircurgia:false,teveCompl:false,familiarCompl:false,usaMed:false,usaSupl:false,alergiaMed:false,fumante:false,alcool:false,drogas:false,ativFisica:false,sono:false,possivelGravidez:false,amamentando:false,anticoncepcional:false,menopausa:false,dataCirurgKnown:false,proteseDentaria:false,piercingImplante:false,alergiaLatex:false,alergiaAlim:false,acompanhante:false};
+let sexoVal='',informanteVal='paciente',relacaoVal='',procVal='',tipoIdVal='crm';
+let anestTipos=new Set(),condicoes=new Set(),medicamentos=[],arquivos=[],declConfirmed=false;
+
+// ── WELCOME ──
+function startForm() {
+  document.getElementById('s-welcome').style.display = 'none';
+  document.getElementById('main-header').style.display = '';
+  document.getElementById('progress-wrap').style.display = '';
+  document.getElementById('form-main').style.display = '';
+  document.getElementById('nav-footer').style.display = '';
+  updateStep();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── INIT ──
+document.addEventListener('DOMContentLoaded', () => {
+  buildDots(); buildAnestTipos(); buildCondList();
+  ['data-nasc','data-cirurgia','ultima-mens'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', e => { e.target.value = maskDate(e.target.value); });
+  });
+  document.getElementById('emerg-tel')?.addEventListener('input', e => { e.target.value = maskPhone(e.target.value); });
+  document.getElementById('crm-medico')?.addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g,''); });
+  document.getElementById('file-input').addEventListener('change', e => { for (const f of e.target.files) addFile(f); e.target.value = ''; });
+});
+
+// ── DOTS ──
+function buildDots() {
+  const c = document.getElementById('dots');
+  STEPS.forEach((_, i) => { const d=document.createElement('div'); d.className='dot'; d.id='dot-'+i; d.textContent=i+1; c.appendChild(d); });
+}
+function updateDots() {
+  STEPS.forEach((_,i) => { const d=document.getElementById('dot-'+i); d.className='dot'+(i===currentStep?' active':i<currentStep?' done':''); });
+  document.getElementById('step-label').textContent=`Passo ${currentStep+1} de ${STEPS.length} — ${STEP_LABELS[currentStep]}`;
+}
+
+// ── NAVIGATION ──
+function updateStep() {
+  STEPS.forEach((id,i) => { document.getElementById(id).classList.toggle('active',i===currentStep); });
+  document.getElementById('s-success').classList.remove('active');
+  updateDots();
+  const isFirst=currentStep===0, isLast=currentStep===STEPS.length-1;
+  document.getElementById('btn-back').style.display=isFirst?'none':'';
+  document.getElementById('btn-next').textContent=isLast?'📤 Enviar Ficha':'Próximo →';
+  if(currentStep===9) buildResumo();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function nextStep() {
+  if(!validateStep(currentStep)) return;
+  if(currentStep===STEPS.length-1){submitForm();return;}
+  let next=currentStep+1;
+  if(next===6 && sexoVal!=='Feminino') next=7;
+  if(next<STEPS.length){currentStep=next;updateStep();}
+}
+function prevStep() {
+  let prev=currentStep-1;
+  if(prev===6 && sexoVal!=='Feminino') prev=5;
+  if(prev>=0){currentStep=prev;updateStep();}
+}
+
+// ── VALIDATION ──
+function validarDataCirurgia() {
+  const errEl = document.getElementById('data-cir-error');
+  const dateStr = val('data-cirurgia');
+  if (!errEl || dateStr.length < 10) { if(errEl) errEl.style.display='none'; return true; }
+  const d = parseBRDate(dateStr);
+  if (!d) { errEl.textContent = 'Data inválida. Use o formato DD/MM/AAAA.'; errEl.style.display='block'; return false; }
+  const hoje = new Date(); hoje.setHours(0,0,0,0);
+  if (d < hoje) { errEl.textContent = '⚠️ A data informada já passou. O procedimento deve ser agendado para hoje ou uma data futura.'; errEl.style.display='block'; return false; }
+  errEl.style.display='none'; return true;
+}
+
+function validateStep(step) {
+  hideErr('s0-error');hideErr('s1-error');hideErr('s2-error');hideErr('s3-error');hideErr('s5-error');hideErr('s7-error');hideErr('s9-error');
+  if(step===0){
+    const crm=document.getElementById('crm-medico').value.trim();
+    if(!crm){showErr('s0-error','Por favor, digite o número do CRM do médico anestesiologista.');return false;}
+  }
+  if(step===1){
+    const nome=document.getElementById('nome').value.trim();
+    if(nome.length<3){showErr('s1-error','Por favor, digite seu nome completo.');return false;}
+    if(!sexoVal){showErr('s1-error','Por favor, selecione o sexo biológico.');return false;}
+    const peso=document.getElementById('peso').value.trim(), alt=document.getElementById('altura').value.trim();
+    if(!peso||parseFloat(peso)<=0){showErr('s1-error','Por favor, informe seu peso.');return false;}
+    if(!alt||parseFloat(alt)<=0){showErr('s1-error','Por favor, informe sua altura.');return false;}
+    if(!procVal){showErr('s1-error','Por favor, selecione a categoria do procedimento previsto.');return false;}
+    if(informanteVal==='responsavel'){
+      if(!document.getElementById('resp-nome').value.trim()){showErr('s1-error','Por favor, informe o nome do responsável.');return false;}
+      if(!relacaoVal){showErr('s1-error','Por favor, selecione a relação do responsável com o paciente.');return false;}
+    }
+  }
+  if(step===2){
+    // Histórico Cirúrgico - no mandatory fields, but if teveCircurgia=true, description should exist
+    if(boolState.teveCircurgia && !val('desc-cirurgias')){
+      showErr('s2-error','Por favor, descreva as cirurgias anteriores.');return false;
+    }
+    if(boolState.teveCompl && !val('desc-compl')){
+      showErr('s2-error','Por favor, descreva a complicação anestésica.');return false;
+    }
+    if(boolState.familiarCompl && !val('desc-familiar')){
+      showErr('s2-error','Por favor, descreva a complicação familiar.');return false;
+    }
+  }
+  if(step===3){
+    // Medicamentos - if uses meds, at least one must be added with name
+    if(boolState.usaMed && medicamentos.length===0){
+      showErr('s3-error','Por favor, adicione pelo menos um medicamento.');return false;
+    }
+    if(boolState.usaMed && medicamentos.some(m=>!m.nome.trim())){
+      showErr('s3-error','Preencha o nome de todos os medicamentos adicionados.');return false;
+    }
+    if(boolState.alergiaMed && !val('desc-alerg-med')){
+      showErr('s3-error','Por favor, descreva a alergia a medicamentos.');return false;
+    }
+  }
+  if(step===4){
+    // Condições de saúde - no mandatory validation needed (user can have none)
+    // But if "outras condições" text is started, it should be meaningful
+  }
+  if(step===5){
+    // Hábitos - if fumante/alcool/drogas = true, description should exist
+    if(boolState.fumante && !val('desc-tabaco')){
+      showErr('s5-error','Por favor, descreva o uso de tabaco.');return false;
+    }
+    if(boolState.drogas && !val('desc-drogas')){
+      showErr('s5-error','Por favor, descreva o uso de substâncias.');return false;
+    }
+  }
+  if(step===6){
+    // Saúde feminina - only shown for female, no strictly required fields
+  }
+  if(step===7){
+    if(boolState.dataCirurgKnown && !validarDataCirurgia()){
+      showErr('s7-error','Por favor, corrija a data da cirurgia antes de continuar.');
+      return false;
+    }
+  }
+  if(step===9){
+    if(!declConfirmed){showErr('s9-error','Por favor, confirme a declaração de veracidade antes de enviar.');return false;}
+  }
+  return true;
+}
+function showErr(id,msg){const e=document.getElementById(id);if(e){e.textContent=msg;e.style.display='block';setTimeout(()=>e.scrollIntoView({behavior:'smooth',block:'center'}),50);}}
+function hideErr(id){const e=document.getElementById(id);if(e)e.style.display='none';}
+
+// ── UI HELPERS ──
+// selectTipoId removido — apenas CRM é suportado
+function selectSexo(val){
+  sexoVal=val;
+  document.querySelectorAll('#s1 .btn-group .btn-op').forEach(b=>{b.classList.toggle('sel',b.textContent===val);});
+}
+function selectInformante(val){
+  informanteVal=val;
+  document.querySelectorAll('#informante-group .btn-op').forEach(b=>{b.classList.toggle('sel',b.getAttribute('onclick')?.includes(val));});
+  document.getElementById('resp-wrap').classList.toggle('show',val==='responsavel');
+}
+function selectRelacao(val){
+  relacaoVal=val;
+  document.querySelectorAll('#resp-wrap .btn-op').forEach(b=>{b.classList.toggle('sel',b.textContent.trim()===val);});
+}
+function selectProc(val){
+  procVal=val;
+  document.querySelectorAll('#proc-group .proc-card').forEach(b=>{b.classList.toggle('sel',b.querySelector('.proc-name')?.textContent.trim()===val||b.getAttribute('onclick')?.includes("'"+val+"'"));});
+}
+function toggle(key,val,wrapId){
+  boolState[key]=val;
+  const wrap=document.getElementById(wrapId);
+  if(wrap) wrap.classList.toggle('show',val);
+  const parent=wrap?.previousElementSibling;
+  updateSimNao(parent?.querySelector('.sim-nao'),val);
+}
+function setState(key,val){
+  boolState[key]=val;
+  event?.currentTarget?.closest('.field')?.querySelectorAll('.sim-nao button')?.forEach(b=>{const isSim=b.classList.contains('btn-sim');b.classList.toggle('on',isSim?val:!val);});
+}
+function updateSimNao(el,val){
+  if(!el) return;
+  el.querySelector('.btn-sim')?.classList.toggle('on',val);
+  el.querySelector('.btn-nao')?.classList.toggle('on',!val);
+}
+function toggleMenopausa(val){
+  boolState.menopausa=val;
+  document.getElementById('mens-wrap').classList.toggle('show',!val);
+  event?.currentTarget?.closest('.field')?.querySelectorAll('.sim-nao button')?.forEach(b=>{b.classList.toggle('on',b.classList.contains('btn-sim')?val:!val);});
+}
+function toggleDecl(){
+  declConfirmed=!declConfirmed;
+  document.getElementById('decl-wrap').classList.toggle('on',declConfirmed);
+  document.getElementById('decl-box').textContent=declConfirmed?'✓':'';
+}
+
+// ── ANESTESIA TIPOS ──
+function buildAnestTipos(){
+  const tipos=[{nome:'Anestesia Geral',detalhe:'Dormi completamente e acordei na recuperação'},{nome:'Raqui ou Peridural',detalhe:'Anestesia aplicada na coluna'},{nome:'Sedação',detalhe:'Fiquei sonolento(a) mas não totalmente dormindo'},{nome:'Anestesia Local',detalhe:'Só a área operada ficou anestesiada'},{nome:'Não sei informar',detalhe:'Não me lembro ou não fui informado(a)'}];
+  const c=document.getElementById('anest-tipos');
+  tipos.forEach(t=>{
+    const d=document.createElement('div'); d.className='chk-item';
+    d.innerHTML=`<div class="chk-box"></div><div class="chk-txt"><strong>${t.nome}</strong><br><span style="color:var(--gray);font-size:11px">${t.detalhe}</span></div>`;
+    d.onclick=()=>{if(anestTipos.has(t.nome))anestTipos.delete(t.nome);else anestTipos.add(t.nome);d.classList.toggle('on',anestTipos.has(t.nome));d.querySelector('.chk-box').textContent=anestTipos.has(t.nome)?'✓':'';};
+    c.appendChild(d);
+  });
+}
+
+// ── CONDIÇÕES ──
+const CATEGORIAS=[
+  {titulo:'❤️ Coração e circulação',items:['Hipertensão (pressão alta)','Infarto (ataque cardíaco)','Insuficiência cardíaca (coração fraco, cansa fácil)','Arritmia (coração batendo irregular)','Angina (dor no peito durante esforço)','Marca-passo ou desfibrilador implantado','Doença nas veias ou artérias (varizes graves, obstrução)']},
+  {titulo:'🧠 Cérebro e sistema nervoso',items:['AVC (derrame cerebral)','AIT (mini-derrame transitório)','Epilepsia (convulsões / ataques)','Doença de Parkinson','Esclerose múltipla ou outra doença neurológica']},
+  {titulo:'🫁 Pulmões e respiração',items:['Asma','Bronquite crônica / DPOC (falta de ar constante)','Apneia do sono (para de respirar ao dormir / ronco forte)','Tuberculose pulmonar']},
+  {titulo:'🩺 Hormônios e metabolismo',items:['Diabetes (açúcar alto no sangue)','Hipotireoidismo (tireoide lenta — cansaço, inchaço, friagem)','Hipertireoidismo (tireoide acelerada — agitação, palpitação)','Obesidade ou Sobrepeso']},
+  {titulo:'🫀 Fígado, rins e digestão',items:['Refluxo / azia frequente','Hepatite ou cirrose (doença no fígado)','Insuficiência renal (problema nos rins)','Doença inflamatória intestinal (Crohn, retocolite)']},
+  {titulo:'🩸 Sangue e imunidade',items:['Anemia','Hemofilia ou sangramento excessivo','Trombose ou embolia pulmonar','Doenças autoimunes (lúpus, artrite reumatoide, etc.)']},
+  {titulo:'🎗️ Câncer',items:['Câncer ativo (em tratamento)','Câncer tratado / em remissão (últimos 5 anos)']},
+  {titulo:'🧘 Saúde mental',items:['Depressão / Transtorno Bipolar','Esquizofrenia ou Psicose','Transtorno de Ansiedade (ansiedade, ataques de pânico)','Outros transtornos psiquiátricos']},
+];
+function buildCondList(){
+  const c=document.getElementById('cond-list');
+  CATEGORIAS.forEach(cat=>{
+    const lbl=document.createElement('div'); lbl.className='cat-lbl'; lbl.textContent=cat.titulo; c.appendChild(lbl);
+    const grid=document.createElement('div'); grid.className='chk-grid';
+    cat.items.forEach(item=>{
+      const d=document.createElement('div'); d.className='chk-item';
+      d.innerHTML=`<div class="chk-box"></div><div class="chk-txt">${item}</div>`;
+      d.onclick=()=>{if(condicoes.has(item))condicoes.delete(item);else condicoes.add(item);d.classList.toggle('on',condicoes.has(item));d.querySelector('.chk-box').textContent=condicoes.has(item)?'✓':'';};
+      grid.appendChild(d);
+    });
+    c.appendChild(grid);
+  });
+}
+
+// ── MEDICAMENTOS ──
+function addMed(){medicamentos.push({id:genUUID(),nome:'',dosagem:'',frequencia:''});renderMeds();}
+function removeMed(idx){medicamentos.splice(idx,1);renderMeds();}
+function renderMeds(){
+  const c=document.getElementById('meds-list'); c.innerHTML='';
+  medicamentos.forEach((m,i)=>{
+    const d=document.createElement('div'); d.className='med-card';
+    d.innerHTML=`<button class="rm" onclick="removeMed(${i})">×</button><div class="field"><label>Medicamento ${i+1}</label><input type="text" placeholder="Nome do medicamento" value="${escHtml(m.nome)}" oninput="medicamentos[${i}].nome=this.value"></div><div class="row2"><div class="field"><label>Dosagem</label><input type="text" placeholder="Ex: 50 mg" value="${escHtml(m.dosagem)}" oninput="medicamentos[${i}].dosagem=this.value"></div><div class="field"><label>Frequência</label><input type="text" placeholder="Ex: 1x ao dia" value="${escHtml(m.frequencia)}" oninput="medicamentos[${i}].frequencia=this.value"></div></div>`;
+    c.appendChild(d);
+  });
+}
+
+// ── ARQUIVOS ──
+function addFile(file){
+  if(arquivos.length>=10) return;
+  if(file.size>10*1024*1024){alert('Arquivo excede o tamanho máximo de 10MB');return;}
+  const reader=new FileReader();
+  reader.onload=e=>{const tipo=file.type.startsWith('image/')?'imagem':file.type==='application/pdf'?'pdf':'outro';arquivos.push({nome:file.name,dados:e.target.result,tipo});renderFiles();};
+  reader.readAsArrayBuffer(file);
+}
+function removeFile(idx){arquivos.splice(idx,1);renderFiles();}
+function renderFiles(){
+  const c=document.getElementById('file-list'); c.innerHTML='';
+  arquivos.forEach((f,i)=>{const d=document.createElement('div');d.className='file-item';const icon=f.tipo==='imagem'?'🖼️':f.tipo==='pdf'?'📄':'📎';d.innerHTML=`<span>${icon}</span><span>${escHtml(f.nome)}</span><span class="rm-file" onclick="removeFile(${i})">✕</span>`;c.appendChild(d);});
+}
+
+// ── RESUMO ──
+function buildResumo(){
+  const nome=document.getElementById('nome').value.trim(), nasc=document.getElementById('data-nasc').value, imc=calcIMC();
+  const linhas=[`👤 <b>${nome||'—'}</b>`,`🗓️ Nascimento: ${nasc||'—'}  ·  Sexo: ${sexoVal||'—'}`,`⚖️ Peso: ${val('peso')||'—'} kg  ·  Altura: ${val('altura')||'—'} cm${imc?'  ·  IMC: '+imc.texto+' ('+imc.cl+')':''}`,`🏥 Procedimento: ${procVal||'—'}`,`💊 Medicamentos: ${boolState.usaMed?medicamentos.length+' cadastrado(s)':'Não usa'}`,`🩺 Condições de saúde: ${condicoes.size>0?condicoes.size+' selecionada(s)':'Nenhuma selecionada'}`,`📎 Documentos: ${arquivos.length>0?arquivos.length+' arquivo(s)':'Nenhum'}`,boolState.alergiaMed?'⚠️ Alergia a medicamentos declarada':'',boolState.alergiaLatex?'⚠️ Alergia ao látex declarada':'',boolState.possivelGravidez?'⚠️ Possível gravidez declarada':''].filter(Boolean);
+  document.getElementById('resumo').innerHTML=linhas.join('<br>');
+}
+function calcIMC(){
+  const p=parseFloat(val('peso')),a=parseFloat(val('altura'))/100;
+  if(!p||!a) return null;
+  const v=p/(a*a);
+  let cl='';
+  if(v<18.5)cl='Abaixo do peso';else if(v<25)cl='Peso normal';else if(v<30)cl='Sobrepeso';else if(v<35)cl='Obesidade grau I';else if(v<40)cl='Obesidade grau II';else cl='Obesidade grau III';
+  return{texto:v.toFixed(1),cl,valor:v};
+}
+
+
+// ── ALERTAS CLÍNICOS — geração abrangente ──
+function computeAlertasWeb(dados){
+  const amber=[199,102,8],red=[184,28,36],teal=[10,127,153];
+  const criticos=[],atencao=[],observacao=[];
+  const imc=calcIMC();
+  const imcVal=imc?imc.valor:0;
+  const medStr=medicamentos.map(m=>m.nome.toLowerCase()).join(' ');
+
+  // ── CRÍTICO ──────────────────────────────────────────────────────
+  if(dados.alergiaMed)
+    criticos.push('ALERGIA A MEDICAMENTOS'+(dados.descricaoAlergMed?': '+dados.descricaoAlergMed:''));
+  if(dados.alergiaAlim)
+    criticos.push('ALERGIA ALIMENTAR'+(dados.descAlimAlerg?': '+dados.descAlimAlerg:''));
+  if(dados.alergiaLatex)
+    criticos.push('ALERGIA AO LÁTEX — ambiente latex-free obrigatório');
+  if(dados.possivelGravidez)
+    criticos.push('POSSÍVEL GRAVIDEZ — confirmar beta-hCG antes do procedimento');
+
+  // ── ATENÇÃO ───────────────────────────────────────────────────────
+  // Extremos etários
+  if(dados.nascimento){
+    const hoje=new Date();
+    const diffMs=hoje-dados.nascimento;
+    const diffDias=Math.floor(diffMs/(1000*60*60*24));
+    const idadeAnos=calcAge(dados.nascimento);
+    if(diffDias<=28)
+      atencao.push(`NEONATO (${diffDias} dias) — cuidados anestésicos especializados essenciais`);
+    else if(idadeAnos<2)
+      atencao.push('LACTENTE — via aérea pediátrica, fármacos e doses específicas');
+    else if(idadeAnos<6)
+      atencao.push('PRÉ-ESCOLAR — atenção à via aérea e dosagem pediátrica');
+    if(idadeAnos>=80)
+      atencao.push(`MUITO IDOSO (${idadeAnos} anos) — risco perioperatório elevado, fragilidade, polifarmácia`);
+    else if(idadeAnos>=65)
+      atencao.push(`PACIENTE IDOSO (${idadeAnos} anos) — avaliar fragilidade e reserva funcional`);
+  }
+
+  // Obesidade
+  if(imcVal>=40)
+    atencao.push(`OBESIDADE GRAU III (IMC ${imc.texto}) — via aérea difícil, apneia, risco tromboembólico`);
+  else if(imcVal>=35)
+    atencao.push(`OBESIDADE GRAU II (IMC ${imc.texto}) — via aérea difícil e risco ventilatório aumentados`);
+
+  // Histórico anestésico
+  if(dados.teveCompl)
+    atencao.push('COMPLICAÇÃO ANESTÉSICA PRÉVIA'+(dados.descricaoCompl?': '+dados.descricaoCompl:''));
+  if(dados.familiarCompl)
+    atencao.push('HISTÓRICO FAMILIAR DE COMPLICAÇÃO ANESTÉSICA'+(dados.descricaoFamiliar?': '+dados.descricaoFamiliar:'')+' — suspeitar de Hipertermia Maligna');
+
+  // Condições cardiovasculares graves
+  const conds=condicoes;
+  if([...conds].some(c=>c.startsWith('Insuficiência cardíaca')))
+    atencao.push('INSUFICIÊNCIA CARDÍACA — avaliar classe NYHA e otimização pré-op');
+  if([...conds].some(c=>c.startsWith('Infarto')))
+    atencao.push('INFARTO PRÉVIO — risco isquêmico perioperatório aumentado');
+  if([...conds].some(c=>c.startsWith('Angina')))
+    atencao.push('ANGINA — avaliar estabilidade e reserva coronariana');
+  if([...conds].some(c=>c.startsWith('Marca-passo')))
+    atencao.push('MARCA-PASSO / DESFIBRILADOR — protocolo de eletrocirurgia específico');
+  if([...conds].some(c=>c.startsWith('Hemofilia')))
+    atencao.push('HEMOFILIA / SANGRAMENTO EXCESSIVO — cobertura hemoterápica pré-op');
+  if([...conds].some(c=>c.startsWith('Trombose')))
+    atencao.push('TROMBOSE / EMBOLIA PRÉVIA — risco tromboembólico elevado, avaliar anticoagulação');
+  if([...conds].some(c=>c.startsWith('Insuficiência renal')))
+    atencao.push('INSUFICIÊNCIA RENAL — ajuste de doses; risco metabólico e hemorrágico');
+  if([...conds].some(c=>c.startsWith('Hepatite ou cirrose')))
+    atencao.push('HEPATOPATIA / CIRROSE — metabolismo de fármacos comprometido; coagulopatia possível');
+  if([...conds].some(c=>c.toLowerCase().includes('apneia'))||dados.sono)
+    atencao.push('APNEIA DO SONO / DISTÚRBIO RESPIRATÓRIO'+(dados.descSono?': '+dados.descSono:'')+' — CPAP, posicionamento, vigilância pós-op');
+  if(conds.has('Câncer ativo (em tratamento)'))
+    atencao.push('CÂNCER ATIVO EM TRATAMENTO — imunossupressão, toxicidade quimio/radioterapia');
+
+  // Medicamentos de alto risco
+  const anticoagWords=['warfarin','varfarina','rivaroxaban','xarelto','apixaban','eliquis','dabigatran','pradaxa','enoxaparin','clexane','heparin','heparina','fondaparinux'];
+  if(anticoagWords.some(w=>medStr.includes(w)))
+    atencao.push('USO DE ANTICOAGULANTE — planejar bridge therapy; risco hemorrágico aumentado');
+  const insulinWords=['insulina','insulin','nph','glargina','lantus','detemir','levemir','lispro','aspart','glulisina','degludeca'];
+  if(insulinWords.some(w=>medStr.includes(w)))
+    atencao.push('DIABETES INSULINO-DEPENDENTE — monitorar glicemia perioperatória rigorosamente');
+  const maoiWords=['fenelzina','phenelzine','tranilcipromina','tranylcypromine','isocarboxazida','selegilina','rasagilina'];
+  if(maoiWords.some(w=>medStr.includes(w)))
+    atencao.push('USO DE IMAOM — interações graves com vasopressores e opioides; risco de crise hipertensiva');
+
+  // ── OBSERVAÇÃO ────────────────────────────────────────────────────
+  if(imcVal>=30&&imcVal<35)
+    observacao.push(`OBESIDADE GRAU I (IMC ${imc.texto}) — via aérea e ventilação com atenção redobrada`);
+  else if(imcVal>=25&&imcVal<30)
+    observacao.push(`SOBREPESO (IMC ${imc.texto}) — posicionamento e acesso venoso podem ser desafiadores`);
+
+  if([...conds].some(c=>c.startsWith('Hipertensão')))
+    observacao.push('HIPERTENSÃO ARTERIAL — monitorar pressão; avaliar medicação atual');
+  if([...conds].some(c=>c.startsWith('Arritmia')))
+    observacao.push('ARRITMIA — ECG pré-op; monitorar durante procedimento');
+  if([...conds].some(c=>c.startsWith('AVC')||c.startsWith('AIT')))
+    observacao.push('AVC / AIT PRÉVIO — risco de evento neurológico perioperatório');
+  if([...conds].some(c=>c.startsWith('Epilepsia')))
+    observacao.push('EPILEPSIA — manter antiepilépticos; alertar equipe para profiláticos anestésicos');
+  if([...conds].some(c=>c.startsWith('Doença de Parkinson')))
+    observacao.push('DOENÇA DE PARKINSON — não suspender levodopa; riscos de rigidez e disfagia');
+  if([...conds].some(c=>c.startsWith('Asma')))
+    observacao.push('ASMA — otimizar controle pré-op; broncodilatador disponível');
+  if([...conds].some(c=>c.startsWith('Bronquite crônica')))
+    observacao.push('DPOC / BRONQUITE CRÔNICA — avaliar função pulmonar; risco de retenção de CO₂');
+  if([...conds].some(c=>c.startsWith('Diabetes'))&&!insulinWords.some(w=>medStr.includes(w)))
+    observacao.push('DIABETES — protocolo glicêmico perioperatório; risco de hipoglicemia em jejum');
+  if([...conds].some(c=>c.startsWith('Hipertireoidismo')))
+    observacao.push('HIPERTIREOIDISMO — risco de crise tireotóxica; avaliar controle pré-op');
+  if([...conds].some(c=>c.startsWith('Hipotireoidismo')))
+    observacao.push('HIPOTIREOIDISMO — metabolismo lento; maior sensibilidade a opioides e sedativos');
+  if([...conds].some(c=>c.startsWith('Refluxo')))
+    observacao.push('REFLUXO GASTROESOFÁGICO — risco de aspiração; considerar pré-medicação antiácida');
+  if([...conds].some(c=>c.startsWith('Anemia')))
+    observacao.push('ANEMIA — verificar hemoglobina pré-op; reserva hemoterápica se necessário');
+
+  const antiplatWords=['ácido acetilsalicílico','aas','aspirina','aspirin','clopidogrel','plavix','ticagrelor','brilinta','prasugrel'];
+  if(antiplatWords.some(w=>medStr.includes(w)))
+    observacao.push('ANTIAGREGANTE PLAQUETÁRIO — risco hemorrágico; avaliar suspensão 5–7 dias antes');
+  const corticoWords=['prednisona','prednisolona','dexametasona','dexamethasone','hidrocortisona','betametasona'];
+  if(corticoWords.some(w=>medStr.includes(w)))
+    observacao.push('CORTICOTERAPIA — risco de supressão adrenal; dose de estresse cirúrgico pode ser necessária');
+  const metformWords=['metformina','metformin','glifage','glucoformin'];
+  if(metformWords.some(w=>medStr.includes(w)))
+    observacao.push('METFORMINA — suspender 24–48h antes de cirurgias com contraste ou de grande porte');
+
+  if(dados.fumante)
+    observacao.push('TABAGISMO — risco respiratório aumentado; recomendado cessar ≥8h antes');
+  if(dados.alcool)
+    observacao.push('CONSUMO DE ÁLCOOL — tolerância a fármacos; risco de síndrome de abstinência pós-op');
+  if(dados.drogas)
+    observacao.push('USO DE SUBSTÂNCIAS ILÍCITAS'+(dados.descDrogas?': '+dados.descDrogas:'')+' — interações farmacológicas; alertar anestesista');
+  if(dados.usaSupl)
+    observacao.push('SUPLEMENTOS / FITOTERÁPICOS'+(dados.descricaoSupl?': '+dados.descricaoSupl:'')+' — ação anticoagulante/antiagregante possível');
+  if(dados.amamentando)
+    observacao.push('AMAMENTAÇÃO — orientar pausa temporária conforme fármaco utilizado');
+  if(dados.anticoncepcional)
+    observacao.push('USO DE ANTICONCEPCIONAL — risco tromboembólico perioperatório aumentado');
+  if(dados.piercingImplante)
+    observacao.push('PIERCING / IMPLANTE METÁLICO — risco de queimadura em eletrocirurgia; remover ou isolar');
+  if(dados.proteseDentaria)
+    observacao.push('PRÓTESE DENTÁRIA — remover antes da intubação; risco de deslocamento e aspiração');
+
+  return{criticos,atencao,observacao};
+}
+
+function drawAlertasSectionWeb(doc,yRef,alertasObj){
+  let y=yRef;
+  const W=595.28,mH=36,cW=W-mH*2;
+  const navy=[23,44,87],teal=[10,127,153],red=[184,28,36],amber=[199,102,8],green=[26,133,79],border=[203,217,235],gray=[107,117,133];
+  function guard(need){if(y+need>820){doc.addPage();y=38;doc.setDrawColor(...border);doc.setLineWidth(0.4);doc.line(mH,830,W-mH,830);doc.setFontSize(7);doc.setTextColor(...gray);doc.text('Previanest — Ficha Pré-Anestésica · Documento Confidencial',mH,838);doc.text(`Pág. ${doc.internal.getCurrentPageInfo().pageNumber}`,W-mH,838,{align:'right'});}return y;}
+  const{criticos,atencao,observacao}=alertasObj;
+  const total=criticos.length+atencao.length+observacao.length;
+
+  // ── Header do bloco de alertas ──
+  guard(30);
+  doc.setFillColor(...red);doc.roundedRect(mH,y,cW,24,4,4,'F');
+  doc.setFontSize(10);doc.setFont(undefined,'bold');doc.setTextColor(255,255,255);
+  doc.text('ALERTAS CLÍNICOS PERIOPERATÓRIOS',mH+12,y+15);
+  doc.setFontSize(7.5);doc.setFont(undefined,'normal');
+  doc.text(`${total} alerta${total===1?'':'s'} identificado${total===1?'':'s'}`,W-mH-10,y+15,{align:'right'});
+  y+=28;
+
+  if(total===0){
+    guard(24);
+    doc.setFillColor(230,247,237);doc.roundedRect(mH,y,cW,20,4,4,'F');
+    doc.setFontSize(8.5);doc.setFont(undefined,'bold');doc.setTextColor(...green);
+    doc.text('Nenhum alerta clínico identificado nas informações fornecidas',mH+12,y+13);
+    y+=26;return y;
+  }
+
+  function drawGrupo(titulo,cor,itens){
+    if(!itens.length)return;
+    guard(22);
+    // Badge do grupo
+    const lgR=Math.min(255,cor[0]+Math.round((255-cor[0])*0.88)),lgG=Math.min(255,cor[1]+Math.round((255-cor[1])*0.88)),lgB=Math.min(255,cor[2]+Math.round((255-cor[2])*0.88));
+    doc.setFillColor(lgR,lgG,lgB);doc.roundedRect(mH,y,cW,16,3,3,'F');
+    doc.setFillColor(...cor);doc.roundedRect(mH,y,4,16,3,3,'F');
+    doc.setFontSize(7.5);doc.setFont(undefined,'bold');doc.setTextColor(...cor);
+    doc.text(titulo.toUpperCase(),mH+9,y+11);
+    y+=18;
+    itens.forEach((item,i)=>{
+      const text='- '+item;
+      const lines=doc.splitTextToSize(text,cW-22);
+      const rH=Math.max(18,lines.length*11+7);
+      guard(rH);
+      if(i%2===0){
+        doc.setFillColor(Math.min(255,cor[0]+Math.round((255-cor[0])*0.96)),Math.min(255,cor[1]+Math.round((255-cor[1])*0.96)),Math.min(255,cor[2]+Math.round((255-cor[2])*0.96)));
+        doc.rect(mH,y,cW,rH,'F');
+      }
+      doc.setFillColor(...cor);doc.circle(mH+8,y+rH/2,2.5,'F');
+      doc.setFontSize(8);doc.setFont(undefined,'normal');doc.setTextColor(32,38,50);
+      doc.text(lines,mH+16,y+rH/2+3-(lines.length-1)*5.5);
+      doc.setDrawColor(cor[0],cor[1],cor[2]);doc.setLineWidth(0.2);
+      doc.line(mH+12,y+rH,mH+cW-8,y+rH);
+      y+=rH;
+    });
+    y+=4;
+  }
+
+  drawGrupo('CRÍTICO — requer atenção imediata antes do procedimento',red,criticos);
+  drawGrupo('ATENÇÃO — risco perioperatório relevante',amber,atencao);
+  drawGrupo('OBSERVAÇÃO — considerar no planejamento anestésico',teal,observacao);
+
+  // linha divisória
+  doc.setDrawColor(...border);doc.setLineWidth(0.5);
+  doc.line(mH,y,mH+cW,y);y+=10;
+  return y;
+}
+
+
+// ── PDF ──
+function gerarPDF(dados){
+  const{jsPDF}=window.jspdf;
+  const doc=new jsPDF('p','pt','a4');
+  const W=595.28,mH=36,mV=38,cW=W-mH*2; let y=0;
+  const navy=[23,44,87],teal=[10,127,153],gray=[107,117,133],red=[184,28,36],green=[26,133,79],border=[203,217,235],rowBg=[242,246,255];
+  function newPage(){doc.addPage();y=mV;doc.setDrawColor(...border);doc.setLineWidth(0.4);doc.line(mH,830,W-mH,830);doc.setFontSize(7);doc.setTextColor(...gray);doc.text('Previanest — Ficha Pré-Anestésica  ·  Documento Confidencial',mH,838);doc.text(`Pág. ${doc.internal.getCurrentPageInfo().pageNumber}`,W-mH,838,{align:'right'});}
+  function guard(need){if(y+need>820)newPage();}
+  function hdrSection(num,title){guard(30);y+=8;doc.setFillColor(...navy);doc.roundedRect(mH,y,cW,24,4,4,'F');doc.setFillColor(...teal);doc.roundedRect(mH,y,5,24,4,4,'F');doc.setFontSize(9);doc.setTextColor(255,255,255);doc.setFont(undefined,'bold');doc.text(`${num}  ${title}`,mH+14,y+15);doc.setFont(undefined,'normal');y+=30;doc.internal.pageRow=0;}
+  function row(label,value,bold){
+    if(!value) return;
+    const lW=150,vW=cW-lW-10,lines=doc.splitTextToSize(String(value),vW),rH=Math.max(20,lines.length*12+8);
+    guard(rH);const rn=doc.internal.pageRow||0;
+    if(rn%2===0){doc.setFillColor(...rowBg);doc.rect(mH,y,cW,rH,'F');}
+    doc.internal.pageRow=rn+1;
+    doc.setFontSize(7.5);doc.setTextColor(...gray);doc.setFont(undefined,'normal');doc.text(label.toUpperCase(),mH+8,y+rH/2+3);
+    doc.setFontSize(9);doc.setTextColor(50,62,89);doc.setFont(undefined,bold?'bold':'normal');doc.text(lines,mH+lW+8,y+rH/2+3-(lines.length-1)*6);
+    doc.setDrawColor(...border);doc.setLineWidth(0.3);doc.line(mH+lW,y+4,mH+lW,y+rH-4);doc.line(mH+6,y+rH,mH+cW-6,y+rH);y+=rH;
+  }
+  function alertRow(text,color){
+    const lines=doc.splitTextToSize(text,cW-26),bH=lines.length*12+16;guard(bH);
+    doc.setFillColor(color[0],color[1],color[2]);doc.roundedRect(mH,y,cW,bH,5,5,'F');
+    doc.setFillColor(color[0],color[1],color[2]);doc.roundedRect(mH,y,5,bH,5,5,'F');
+    doc.setFontSize(9);doc.setFont(undefined,'bold');doc.setTextColor(...color);doc.text(lines,mH+12,y+12);
+    doc.setFont(undefined,'normal');y+=bH+6;
+  }
+  doc.setFillColor(...navy);doc.rect(0,0,W,80,'F');doc.setFillColor(...teal);doc.rect(0,75,W,5,'F');
+  doc.setFontSize(16);doc.setFont(undefined,'bold');doc.setTextColor(255,255,255);doc.text('FICHA PRÉ-ANESTÉSICA',mH+52,34);
+  doc.setFontSize(8.5);doc.setFont(undefined,'normal');doc.text('Previanest — Avaliação Pré-Operatória Digital',mH+52,50);
+  doc.circle(mH+22,38,19,'S');doc.setFontSize(16);doc.setFont(undefined,'black');doc.text('P',mH+16,45);
+  const now=new Date();
+  doc.setFontSize(7.5);doc.setFont(undefined,'normal');doc.text('Data de emissão',W-mH-150,28);
+  doc.setFontSize(10);doc.setFont(undefined,'bold');doc.text(formatDate(now)+'  '+formatTime(now),W-mH-150,42);
+  doc.setFontSize(6);doc.setFont(undefined,'normal');doc.text('CONFIDENCIAL — USO MÉDICO EXCLUSIVO',W-mH-150,58);
+  // Rodapé da página 1 (sem adicionar nova página)
+  doc.setDrawColor(...border);doc.setLineWidth(0.4);doc.line(mH,830,W-mH,830);
+  doc.setFontSize(7);doc.setTextColor(...gray);
+  doc.text('Previanest — Ficha Pré-Anestésica  ·  Documento Confidencial',mH,838);
+  doc.text('Pág. 1',W-mH,838,{align:'right'});
+  y=95;
+  doc.setFillColor(248,250,255);doc.roundedRect(mH,y,cW,90,8,8,'F');
+  doc.setDrawColor(...border);doc.setLineWidth(0.8);doc.roundedRect(mH,y,cW,90,8,8,'S');
+  doc.setFillColor(...navy);doc.roundedRect(mH,y,6,90,8,8,'F');
+  doc.setFontSize(7);doc.setFont(undefined,'bold');doc.setTextColor(...teal);doc.text('PACIENTE',mH+15,y+14);
+  doc.setFontSize(13);doc.setFont(undefined,'bold');doc.setTextColor(...navy);doc.text(dados.nomeCompleto||'Não informado',mH+15,y+28);
+  const imc=calcIMC(),nascText=dados.dataNascimentoTexto||'—',idadeCalc=dados.nascimento?`${calcAge(dados.nascimento)} anos`:'';
+  doc.setFontSize(9.5);doc.setFont(undefined,'normal');doc.setTextColor(51,62,89);doc.text(`${nascText}  ·  ${idadeCalc}  ·  ${dados.sexo||'—'}`,mH+15,y+42);
+  doc.setFontSize(8.5);doc.setTextColor(...gray);doc.text(`Informante: ${dados.informanteDescricao}`,mH+15,y+56);
+  if(dados.contatoEmergenciaNome) doc.text(`Emergência: ${dados.contatoEmergenciaNome}  ${dados.contatoEmergenciaTelefone}`,mH+15,y+68);
+  const c2x=mH+cW*0.56;
+  doc.setFontSize(7);doc.setFont(undefined,'bold');doc.setTextColor(...teal);doc.text('DADOS FÍSICOS',c2x,y+14);
+  doc.setFontSize(11);doc.setFont(undefined,'bold');doc.setTextColor(...navy);
+  doc.text(dados.peso?`${dados.peso} kg`:'— kg',c2x,y+32);
+  doc.text(dados.altura?`${dados.altura} cm`:'— cm',c2x+55,y+32);
+  doc.setFontSize(7.5);doc.setFont(undefined,'normal');doc.setTextColor(...gray);doc.text('PESO',c2x,y+22);doc.text('ALTURA',c2x+55,y+22);
+  if(imc){const ic=imc.valor<25?green:imc.valor<30?[199,102,8]:red;doc.setTextColor(...ic);doc.setFont(undefined,'bold');doc.setFontSize(8);doc.text(`IMC ${imc.texto} — ${imc.cl}`,c2x,y+56);}
+  const c3x=mH+cW*0.84;
+  doc.setFontSize(7);doc.setFont(undefined,'bold');doc.setTextColor(...teal);doc.text('ALERTAS',c3x,y+14);
+  const alertasObj=computeAlertasWeb(dados);
+  let ay=y+26;
+  const nCrit=alertasObj.criticos.length,nAten=alertasObj.atencao.length,nObs=alertasObj.observacao.length;
+  const nTotal=nCrit+nAten+nObs;
+  if(nTotal===0){doc.setTextColor(...green);doc.setFontSize(7);doc.setFont(undefined,'bold');doc.text('SEM ALERTAS',c3x,ay);}
+  else{if(nCrit>0){doc.setFillColor(...red);doc.roundedRect(c3x,ay-11,68,14,3,3,'F');doc.setTextColor(255,255,255);doc.setFont(undefined,'bold');doc.setFontSize(6.5);doc.text(`${nCrit} CRÍTICO${nCrit>1?'S':''}`,c3x+3,ay-2);ay+=19;}
+       if(nAten>0){doc.setFillColor(199,102,8);doc.roundedRect(c3x,ay-11,68,14,3,3,'F');doc.setTextColor(255,255,255);doc.setFont(undefined,'bold');doc.setFontSize(6.5);doc.text(`${nAten} ATENÇÃO`,c3x+3,ay-2);ay+=19;}
+       if(nObs>0){doc.setFillColor(...teal);doc.roundedRect(c3x,ay-11,68,14,3,3,'F');doc.setTextColor(255,255,255);doc.setFont(undefined,'bold');doc.setFontSize(6.5);doc.text(`${nObs} OBSERV.`,c3x+3,ay-2);ay+=19;}}
+  y+=102;doc.setFont(undefined,'normal');
+  y=drawAlertasSectionWeb(doc,y,alertasObj);
+  hdrSection('01','IDENTIFICAÇÃO DO PACIENTE');
+  row('Nome completo',dados.nomeCompleto,true);row('Nascimento / Idade',`${nascText}${idadeCalc?'  ·  '+idadeCalc:''}`);row('Sexo',dados.sexo);
+  row('Peso / Altura',`${dados.peso||'—'} kg  /  ${dados.altura||'—'} cm${imc?'  ·  IMC '+imc.texto+' ('+imc.cl+')':''}`);
+  row('Informante',dados.informanteDescricao);if(dados.contatoEmergenciaNome)row('Contato de emergência',`${dados.contatoEmergenciaNome}  ${dados.contatoEmergenciaTelefone}`);
+  if(dados.crmMedico)row('Médico / CRM',`${dados.ufMedico}-${dados.crmMedico}`);
+  hdrSection('02','PROCEDIMENTO PREVISTO');row('Categoria',dados.procedimentoCategoria);if(dados.procedimentoNome)row('Procedimento descrito',dados.procedimentoNome);if(dados.dataCirurgiaConhecida&&dados.dataCirurgiaTexto)row('Data prevista',dados.dataCirurgiaTexto);
+  hdrSection('03','HISTÓRICO CIRÚRGICO E ANESTÉSICO');row('Cirurgias anteriores',dados.teveCircurgia?'Sim — '+(dados.descricaoCirurgias||'(descrito)'):'Não');if(dados.teveCircurgia&&anestTipos.size>0)row('Tipos de anestesia prévia',Array.from(anestTipos).join('  ·  '));row('Complicação anestésica',dados.teveCompl?'Sim — '+(dados.descricaoCompl||'sim'):'Não',dados.teveCompl);row('Complicação em familiar',dados.familiarCompl?'Sim — '+(dados.descricaoFamiliar||'sim'):'Não');
+  hdrSection('04','MEDICAMENTOS EM USO');
+  if(dados.alergiaMed)alertRow('ALERGIA A MEDICAMENTOS: '+(dados.descricaoAlergMed||''),red);else row('Alergia a medicamentos','Nenhuma declarada');
+  if(dados.usaMed&&medicamentos.length>0){
+    guard(20);const hW=cW-20,c1=hW*0.46,c2=hW*0.27;
+    doc.setFillColor(230,236,248);doc.rect(mH+4,y,hW+12,16,'F');doc.setFontSize(7);doc.setFont(undefined,'bold');doc.setTextColor(...gray);
+    doc.text('MEDICAMENTO',mH+12,y+10);doc.text('DOSAGEM',mH+12+c1,y+10);doc.text('FREQUÊNCIA',mH+12+c1+c2+8,y+10);y+=18;
+    medicamentos.forEach((m,i)=>{guard(18);if(i%2===0){doc.setFillColor(...rowBg);doc.rect(mH+4,y,hW+12,16,'F');}doc.setFontSize(9);doc.setFont(undefined,'bold');doc.setTextColor(50,62,89);doc.text(m.nome||'—',mH+12,y+11);doc.setFont(undefined,'normal');doc.setTextColor(...gray);doc.text(m.dosagem||'—',mH+12+c1,y+11);doc.text(m.frequencia||'—',mH+12+c1+c2+8,y+11);doc.setDrawColor(...border);doc.setLineWidth(0.3);doc.line(mH+8,y+16,mH+cW-8,y+16);y+=16;});y+=4;
+  }else if(!dados.usaMed)row('Medicamentos','Não usa medicamentos regularmente');
+  if(dados.usaSupl)row('Suplementos / Fitoterápicos',dados.descricaoSupl);else row('Suplementos','Não usa');
+  hdrSection('05','DOENÇAS E CONDIÇÕES DE SAÚDE');
+  if(condicoes.size===0){row('Condições declaradas','Nenhuma condição selecionada');}
+  else{const arr=Array.from(condicoes),per=Math.ceil(arr.length/2),colW=(cW-12)/2;arr.forEach((cond,i)=>{const col=Math.floor(i/per),rowI=i%per;if(col===0&&rowI===0){guard(per*17+10);y+=4;}const xo=mH+col*(colW+12),yo=y+rowI*17;if(rowI%2===0){doc.setFillColor(...rowBg);doc.rect(xo,yo,colW,16,'F');}doc.setFontSize(8);doc.setTextColor(...green);doc.text('[X]',xo+5,yo+11);doc.setTextColor(50,62,89);doc.text(cond,xo+16,yo+11,{maxWidth:colW-20});});y+=per*17+6;}
+  if(dados.outrasCond)row('Outras condições',dados.outrasCond);
+  hdrSection('06','HÁBITOS E ESTILO DE VIDA');row('Tabagismo',dados.fumante?'Sim — '+(dados.descTabaco||''):'Não');row('Álcool',dados.alcool?'Sim — '+(dados.descAlcool||''):'Não');row('Drogas ilícitas',dados.drogas?'Sim — '+(dados.descDrogas||''):'Não');row('Atividade física',dados.ativFisica?'Sim — '+(dados.descAtiv||''):'Não');row('Distúrbio do sono',dados.sono?'Sim — '+(dados.descSono||''):'Não');
+  if(dados.sexo==='Feminino'){hdrSection('07','SAÚDE FEMININA');row('Possível gravidez',dados.possivelGravidez?'Sim (!)':'Não',dados.possivelGravidez);row('Amamentando',dados.amamentando?'Sim':'Não');row('Anticoncepcional',dados.anticoncepcional?'Sim':'Não');row('Menopausa',dados.menopausa?'Sim':'Não');if(!dados.menopausa&&dados.ultimaMens)row('Última menstruação',dados.ultimaMens);if(dados.possivelGravidez)alertRow('POSSÍVEL GRAVIDEZ — avaliar beta-hCG antes da anestesia',[199,102,8]);}
+  hdrSection(dados.sexo==='Feminino'?'08':'07','PREPARAÇÃO PRÉ-OPERATÓRIA');row('Prótese dentária',dados.proteseDentaria?'Sim — informar equipe':'Não declarada');row('Piercing / Implante',dados.piercingImplante?'Sim — informar equipe':'Não declarado');row('Alergia ao látex',dados.alergiaLatex?'Sim (!) — ambiente latex-free necessário':'Não declarada',dados.alergiaLatex);row('Alergia alimentar',dados.alergiaAlim?'Sim — '+(dados.descAlimAlerg||''):'Não declarada');row('Acompanhante',dados.acompanhante?'Confirmado':'Não confirmado');if(dados.alergiaLatex)alertRow('ALERGIA AO LÁTEX — Este paciente requer ambiente latex-free OBRIGATÓRIO',red);
+  if(dados.obsLivres){hdrSection(dados.sexo==='Feminino'?'09':'08','OBSERVAÇÕES DO PACIENTE');guard(50);const lines=doc.splitTextToSize(dados.obsLivres,cW-24),bH=lines.length*12+20;doc.setFillColor(241,249,255);doc.roundedRect(mH,y,cW,bH,6,6,'F');doc.setDrawColor(...border);doc.roundedRect(mH,y,cW,bH,6,6,'S');doc.setFontSize(9);doc.setFont(undefined,'normal');doc.setTextColor(50,62,89);doc.text(lines,mH+12,y+14);y+=bH+10;}
+  guard(50);y+=10;doc.setFillColor(230,247,237);doc.roundedRect(mH,y,cW,24,5,5,'F');doc.setDrawColor(...green);doc.setLineWidth(0.8);doc.roundedRect(mH,y,cW,24,5,5,'S');doc.setFillColor(...green);doc.roundedRect(mH,y,5,24,5,5,'F');doc.setFontSize(9);doc.setFont(undefined,'bold');doc.setTextColor(...green);doc.text('DECLARAÇÃO DO PACIENTE E ASSINATURA',mH+14,y+15);y+=32;
+  guard(50);doc.setDrawColor(...navy);doc.setLineWidth(0.7);const sw=(cW-20)/2;doc.line(mH+10,y+30,mH+10+sw,y+30);doc.line(mH+sw+30,y+30,mH+cW-10,y+30);doc.setFontSize(7.5);doc.setFont(undefined,'normal');doc.setTextColor(...gray);doc.text('Assinatura / Impressão Digital do Paciente',mH+10+sw/2,y+40,{align:'center'});doc.text('Assinatura do Profissional de Saúde',mH+sw+30+sw/2,y+40,{align:'center'});doc.setFontSize(8);doc.setFont(undefined,'bold');doc.setTextColor(...navy);doc.text('Data: ___________  Local: __________________________________',mH+10,y+10);y+=52;
+
+  // ── CONFIRMAÇÃO DO ANESTESIOLOGISTA — Checklist Cirurgia Segura ──
+  guard(40);y+=10;
+  doc.setFillColor(...green);doc.roundedRect(mH,y,cW,24,5,5,'F');
+  doc.setFillColor(...green);doc.roundedRect(mH,y,5,24,5,5,'F');
+  doc.setFontSize(9);doc.setFont(undefined,'bold');doc.setTextColor(255,255,255);
+  doc.text('CONFIRMAÇÃO DO ANESTESIOLOGISTA — USO EXCLUSIVO DO MÉDICO',mH+14,y+15);y+=30;
+  doc.setFontSize(7.5);doc.setFont(undefined,'normal');doc.setTextColor(...gray);
+  doc.text('Lista de Verificação OMS 2009 (Sign In)  -  CFM Res. 2.174/2017  -  Anvisa RDC 36/2013',mH+6,y);y+=12;
+  doc.text('Marque cada item com caneta após confirmação presencial com o paciente. Assine e carimbe ao final.',mH+6,y);y+=16;
+  const checkItems=[
+    ['Identidade confirmada:','nome, data nasc. e procedimento verificados'],
+    ['Consentimento obtido:','técnica, riscos e alternativas explicados'],
+    ['Histórico revisado:','medicamentos, comorbidades e ficha conferidos'],
+    ['Alergias verificadas:','medicamentos, látex e alimentos confirmados'],
+    ['Sítio cirúrgico marcado:','local identificado (N/A se não aplicável)'],
+    ['Lateralidade confirmada:','membro/lado operado verbalizado pelo paciente'],
+    ['Via aérea avaliada:','Mallampati, abertura bucal, extensão cervical'],
+    ['Sangramento avaliado:','reserva de sangue e contingência definidos'],
+    ['Equipamentos conferidos:','checklist do aparelho de anestesia realizado']
+  ];
+  const halfCW=(cW-6)/2;
+  for(let ci=0;ci<checkItems.length;ci+=2){
+    guard(32);
+    if(ci%4===0){doc.setFillColor(...rowBg);doc.rect(mH,y,cW,30,'F');}
+    // checkbox esquerda
+    doc.setDrawColor(...green);doc.setLineWidth(0.8);doc.rect(mH+10,y+4,11,11);
+    doc.setFontSize(9);doc.setFont(undefined,'bold');doc.setTextColor(50,62,89);doc.text(checkItems[ci][0],mH+26,y+9);
+    doc.setFont(undefined,'normal');doc.setFontSize(8);doc.setTextColor(...gray);doc.text(checkItems[ci][1],mH+26,y+18,{maxWidth:halfCW-20});
+    // checkbox direita (se existir)
+    if(ci+1<checkItems.length){
+      const rx=mH+halfCW+6;
+      doc.setDrawColor(...green);doc.rect(rx,y+4,11,11);
+      doc.setFont(undefined,'bold');doc.setFontSize(9);doc.setTextColor(50,62,89);doc.text(checkItems[ci+1][0],rx+16,y+9);
+      doc.setFont(undefined,'normal');doc.setFontSize(8);doc.setTextColor(...gray);doc.text(checkItems[ci+1][1],rx+16,y+18,{maxWidth:halfCW-20});
+    }
+    doc.setDrawColor(...border);doc.setLineWidth(0.3);doc.line(mH+6,y+28,mH+cW-6,y+28);
+    y+=30;
+  }
+  y+=10;
+  // Notas clínicas
+  guard(70);
+  doc.setFontSize(8);doc.setFont(undefined,'bold');doc.setTextColor(...gray);doc.text('Notas clínicas do anestesiologista:',mH+8,y);y+=14;
+  for(let nl=0;nl<3;nl++){guard(18);doc.setDrawColor(...border);doc.setLineWidth(0.45);doc.line(mH+8,y+12,mH+cW-8,y+12);y+=18;}
+  y+=12;
+  // Campos Data / CRM / Nome
+  guard(56);const col3=cW/3;
+  doc.setFontSize(7.5);doc.setFont(undefined,'bold');doc.setTextColor(...gray);
+  doc.text('Data / Hora da Avaliação:',mH+8,y);doc.text('CRM / UF:',mH+8+col3,y);doc.text('Nome Legível:',mH+8+col3*2,y);y+=13;
+  doc.setDrawColor(...border);doc.setLineWidth(0.5);
+  doc.line(mH+8,y+10,mH+8+col3-18,y+10);doc.line(mH+8+col3,y+10,mH+8+col3*2-18,y+10);doc.line(mH+8+col3*2,y+10,mH+cW-18,y+10);y+=24;
+  // Assinatura + Carimbo
+  guard(68);
+  const aW=cW*0.60,stW=cW-aW-10;
+  doc.setDrawColor(...border);doc.setLineWidth(0.5);
+  doc.roundedRect(mH,y,aW,58,5,5,'S');doc.roundedRect(mH+aW+10,y,stW,58,5,5,'S');
+  doc.setFontSize(7.5);doc.setFont(undefined,'normal');doc.setTextColor(...gray);
+  doc.text('Assinatura do Anestesiologista',mH+aW/2,y+50,{align:'center'});
+  doc.text('Carimbo',mH+aW+10+stW/2,y+50,{align:'center'});
+  y+=68;
+
+  guard(55);y+=8;const lgpdText='Os dados coletados são usados exclusivamente para avaliação pré-anestésica, nos termos da Lei 13.709/2018 (LGPD). O paciente tem direito ao acesso, correção e exclusão de seus dados. Informações fornecidas de forma remota pelo sistema Previanest.';const lgpdLines=doc.splitTextToSize(lgpdText,cW-24),lgpdH=lgpdLines.length*9+28;doc.setFillColor(255,250,235);doc.roundedRect(mH,y,cW,lgpdH,6,6,'F');doc.setDrawColor(199,102,8);doc.setLineWidth(0.5);doc.roundedRect(mH,y,cW,lgpdH,6,6,'S');doc.setFontSize(8.5);doc.setFont(undefined,'bold');doc.setTextColor(199,102,8);doc.text('Aviso de Privacidade — LGPD',mH+10,y+13);doc.setFontSize(7.5);doc.setFont(undefined,'normal');doc.setTextColor(80,60,20);doc.text(lgpdLines,mH+10,y+24);y+=lgpdH+10;
+  guard(20);y+=6;doc.setDrawColor(...navy);doc.setLineWidth(0.8);doc.line(mH,y,mH+cW,y);doc.setFontSize(7.5);doc.setFont(undefined,'normal');doc.setTextColor(...gray);doc.text(`Documento gerado pelo Previanest (web) em ${formatDate(now)} às ${formatTime(now)}. Não substitui avaliação presencial obrigatória.`,W/2,y+12,{align:'center'});
+  return doc.output('arraybuffer');
+}
+
+// ── SUBMIT ──
+async function submitForm(){
+  if(!validateStep(9)) return;
+  const dados=collectData();
+  showLoading('Autenticando...');
+  try{
+    await auth.signInAnonymously();
+    showLoading('Gerando PDF...');
+    const pdfBuffer=gerarPDF(dados),pdfBlob=new Blob([pdfBuffer],{type:'application/pdf'});
+    const fichaId=genUUID(),timestamp=Math.floor(Date.now()/1000),crmCompleto=`${dados.ufMedico}${dados.crmMedico}`;
+    const pasta=dados.crmMedico?`fichas_preanestesicas/${crmCompleto}/${fichaId}`:dados.codigoInstituicao?`fichas_preanestesicas/inst_${dados.codigoInstituicao}/${fichaId}`:`fichas_preanestesicas/sem_vinculo/${fichaId}`;
+    showLoading('Enviando PDF...');
+    const pdfRef=storage.ref(`${pasta}/ficha_pre_anestesica_${timestamp}.pdf`);
+    await pdfRef.put(pdfBlob);const pdfURL=await pdfRef.getDownloadURL();
+    showLoading('Enviando documentos...');
+    const documentosURLs=[];
+    for(let i=0;i<arquivos.length;i++){try{const arq=arquivos[i],nome=arq.nome.replace(/[/\s]/g,'_'),ref=storage.ref(`${pasta}/documentos/${i+1}_${nome}`),tipo=arq.tipo==='imagem'?'image/jpeg':arq.tipo==='pdf'?'application/pdf':'application/octet-stream';await ref.put(new Blob([arq.dados],{type:tipo}));const url=await ref.getDownloadURL();documentosURLs.push(url);}catch(e){console.warn('Doc upload failed:',e);}}
+    showLoading('Salvando ficha...');
+    const imc=calcIMC(),nasc=parseBRDate(dados.dataNascimentoTexto),idade=nasc?calcAge(nasc):0;
+    const fichaDoc={id:fichaId,pacienteNome:dados.nomeCompleto,pacienteSexo:dados.sexo,pacienteIdade:nasc?`${idade} anos`:'',pacienteIdadeAnos:nasc?idade:0,pacientePeso:dados.peso,pacienteAltura:dados.altura,procedimentoCategoria:dados.procedimentoCategoria,procedimentoNome:dados.procedimentoNome,condicoesCount:condicoes.size,medicamentosCount:dados.usaMed?medicamentos.length:0,imc:imc?imc.texto:'',imcClassificacao:imc?imc.cl:'',ufCRM:dados.ufMedico,numeroCRM:dados.crmMedico,crmCompleto,codigoInstituicao:dados.codigoInstituicao||'',dataCriacao:firebase.firestore.FieldValue.serverTimestamp(),pdfURL,dosePdfURL:'', // Intentionally empty: dose PDFs are generated only by the iOS app, web form has no dose calculator
+documentosURLs,temAlergias:dados.alergiaMed||dados.alergiaAlim,alergiaLatex:dados.alergiaLatex,possivelGravidez:dados.possivelGravidez,arquivada:false,dataCirurgiaConhecida:dados.dataCirurgKnown,dataCirurgia:(dados.dataCirurgKnown&&dados.dataCirurgiaTexto)?firebase.firestore.Timestamp.fromDate(parseBRDate(dados.dataCirurgiaTexto)||new Date()):null,dadosCompletos:buildDadosCompletos(dados)};
+    await db.collection('fichas_preanestesicas').doc(fichaId).set(fichaDoc);
+    hideLoading();showSuccess(crmCompleto,dados.nomeCompleto);
+  }catch(err){hideLoading();console.error(err);alert('Erro ao enviar ficha: '+err.message+'\n\nVerifique sua conexão e tente novamente.');}
+}
+
+function collectData(){
+  return{tipoIdentificador:tipoIdVal,ufMedico:val('uf-medico'),crmMedico:val('crm-medico'),codigoInstituicao:val('cod-inst'),nomeCompleto:val('nome'),dataNascimentoTexto:val('data-nasc'),nascimento:parseBRDate(val('data-nasc')),sexo:sexoVal,peso:val('peso'),altura:val('altura'),informanteTipo:informanteVal,informanteNome:val('resp-nome'),informanteRelacao:relacaoVal,informanteDescricao:informanteVal==='paciente'?'Próprio paciente':`${val('resp-nome')} (${relacaoVal})`,contatoEmergenciaNome:val('emerg-nome'),contatoEmergenciaTelefone:val('emerg-tel'),procedimentoCategoria:procVal,procedimentoNome:val('proc-nome'),teveCircurgia:boolState.teveCircurgia,descricaoCirurgias:val('desc-cirurgias'),teveCompl:boolState.teveCompl,descricaoCompl:val('desc-compl'),familiarCompl:boolState.familiarCompl,descricaoFamiliar:val('desc-familiar'),usaMed:boolState.usaMed,usaSupl:boolState.usaSupl,descricaoSupl:val('desc-supl'),alergiaMed:boolState.alergiaMed,descricaoAlergMed:val('desc-alerg-med'),outrasCond:val('outras-cond'),fumante:boolState.fumante,descTabaco:val('desc-tabaco'),alcool:boolState.alcool,descAlcool:val('desc-alcool'),drogas:boolState.drogas,descDrogas:val('desc-drogas'),ativFisica:boolState.ativFisica,descAtiv:val('desc-ativ'),sono:boolState.sono,descSono:val('desc-sono'),possivelGravidez:boolState.possivelGravidez,amamentando:boolState.amamentando,anticoncepcional:boolState.anticoncepcional,menopausa:boolState.menopausa,ultimaMens:val('ultima-mens'),dataCirurgKnown:boolState.dataCirurgKnown,dataCirurgiaTexto:val('data-cirurgia'),proteseDentaria:boolState.proteseDentaria,piercingImplante:boolState.piercingImplante,alergiaLatex:boolState.alergiaLatex,alergiaAlim:boolState.alergiaAlim,descAlimAlerg:val('desc-alim'),acompanhante:boolState.acompanhante,obsLivres:val('obs-livres')};
+}
+
+function buildDadosCompletos(d){
+  const nasc=parseBRDate(d.dataNascimentoTexto),cir=parseBRDate(d.dataCirurgiaTexto);
+  return{nomeCompleto:d.nomeCompleto,dataNascimentoTexto:d.dataNascimentoTexto,dataNascimentoTs:nasc?nasc.getTime()/1000:0,sexo:d.sexo,peso:d.peso,altura:d.altura,tipoIdentificador:d.tipoIdentificador,crmMedico:d.crmMedico,ufMedico:d.ufMedico,codigoInstituicao:d.codigoInstituicao||'',informanteTipo:d.informanteTipo,informanteNome:d.informanteNome,informanteRelacao:d.informanteRelacao,contatoEmergenciaNome:d.contatoEmergenciaNome,contatoEmergenciaTelefone:d.contatoEmergenciaTelefone,procedimentoCategoria:d.procedimentoCategoria,procedimentoNome:d.procedimentoNome,teveCircurgia:d.teveCircurgia,descricaoCirurgias:d.descricaoCirurgias,tiposAnestesiaAnterior:Array.from(anestTipos),teveComplicacaoAnestesia:d.teveCompl,descricaoComplicacaoAnestesia:d.descricaoCompl,familiarComComplicacao:d.familiarCompl,descricaoFamiliarComplicacao:d.descricaoFamiliar,usaMedicamentos:d.usaMed,medicamentos:medicamentos.map(m=>({id:m.id,nome:m.nome,dosagem:m.dosagem,frequencia:m.frequencia})),usaSuplementos:d.usaSupl,descricaoSuplementos:d.descricaoSupl,temAlergiaMedicamento:d.alergiaMed,descricaoAlergiaMedicamento:d.descricaoAlergMed,condicoesSaude:Array.from(condicoes),outrasCondicoesSaude:d.outrasCond,fumante:d.fumante,descricaoTabagismo:d.descTabaco,consumoAlcool:d.alcool,descricaoAlcool:d.descAlcool,usaDrogas:d.drogas,descricaoDrogas:d.descDrogas,praticaAtividadeFisica:d.ativFisica,descricaoAtividadeFisica:d.descAtiv,temDisturbioSono:d.sono,descricaoDisturbioSono:d.descSono,possivelGravidez:d.possivelGravidez,amamentando:d.amamentando,usaAnticoncepcional:d.anticoncepcional,menopausa:d.menopausa,ultimaMenstruacao:d.ultimaMens,dataCirurgiaConhecida:d.dataCirurgKnown,dataCirurgiaTexto:d.dataCirurgiaTexto,dataCirurgiaTs:cir?cir.getTime()/1000:0,temProteseDentaria:d.proteseDentaria,temPiercingOuImplante:d.piercingImplante,alergiaLatex:d.alergiaLatex,alergiaAlimentar:d.alergiaAlim,descricaoAlergiaAlimentar:d.descAlimAlerg,jejumCompreendido:false,temAcompanhante:d.acompanhante,documentosMeta:arquivos.map(a=>({nome:a.nome,tipo:a.tipo})),observacoesLivres:d.obsLivres};
+}
+
+function showSuccess(crm,nome){
+  STEPS.forEach(id=>document.getElementById(id).classList.remove('active'));
+  document.getElementById('s-success').classList.add('active');
+  document.getElementById('nav-footer').style.display='none';
+  document.getElementById('success-tag').textContent=crm?`Enviado ao médico CRM ${crm}`:'Ficha enviada com sucesso';
+}
+
+// ── UTILS ──
+function val(id){return document.getElementById(id)?.value?.trim()||'';}
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function maskDate(v){const n=v.replace(/\D/g,'').slice(0,8);if(n.length<=2)return n;if(n.length<=4)return n.slice(0,2)+'/'+n.slice(2);return n.slice(0,2)+'/'+n.slice(2,4)+'/'+n.slice(4);}
+function maskPhone(v){const n=v.replace(/\D/g,'').slice(0,11);if(n.length<=2)return n.length?'('+n:'';if(n.length<=7)return'('+n.slice(0,2)+') '+n.slice(2);return'('+n.slice(0,2)+') '+n.slice(2,7)+'-'+n.slice(7);}
+function parseBRDate(s){if(!s||s.length!==10)return null;const[d,m,y]=s.split('/').map(Number);if(!d||!m||!y)return null;const date=new Date(y,m-1,d);if(isNaN(date.getTime()))return null;if(date.getDate()!==d||date.getMonth()!==m-1)return null;return date;}
+function calcAge(date){const hoje=new Date();let a=hoje.getFullYear()-date.getFullYear();const dm=hoje.getMonth()-date.getMonth();if(dm<0||(dm===0&&hoje.getDate()<date.getDate()))a--;return a;}
+function formatDate(d){return d.toLocaleDateString('pt-BR');}
+function formatTime(d){return d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});}
+function genUUID(){return([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,c=>(c^crypto.getRandomValues(new Uint8Array(1))[0]&15>>c/4).toString(16));}
+function showLoading(msg){document.getElementById('loading-overlay').style.display='flex';document.getElementById('loading-msg').textContent=msg;}
+function hideLoading(){document.getElementById('loading-overlay').style.display='none';}
+</script>
+</body>
+</html>
